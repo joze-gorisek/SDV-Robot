@@ -1,0 +1,17 @@
+../Core/Src/DDSM115.c:95:9:GetMotorID	8	static
+../Core/Src/DDSM115.c:116:6:CurrentMode	16	static
+../Core/Src/DDSM115.c:127:7:VelocityMode	16	static
+../Core/Src/DDSM115.c:137:7:PositionMode	16	static
+../Core/Src/DDSM115.c:150:17:CurrentToValue	16	static
+../Core/Src/DDSM115.c:162:7:sendCurrentCommand	32	static
+../Core/Src/DDSM115.c:200:18:VelocityToValue	16	static
+../Core/Src/DDSM115.c:212:7:sendVelocityCommand	32	static
+../Core/Src/DDSM115.c:256:7:MotorStop	32	static
+../Core/Src/DDSM115.c:293:18:AngleToValue	16	static
+../Core/Src/DDSM115.c:305:7:sendPositionCommand	32	static
+../Core/Src/DDSM115.c:346:7:MotorSwitchMode	32	static
+../Core/Src/DDSM115.c:384:7:MotorStatus	32	static
+../Core/Src/DDSM115.c:436:7:MotorStatusOLD	136	static
+../Core/Src/DDSM115.c:500:7:ChangeMotorID	24	static
+../Core/Src/DDSM115.c:535:11:compute_crc8	24	static
+../Core/Src/DDSM115.c:553:6:ParseData	16	static
