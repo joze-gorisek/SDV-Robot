@@ -1,0 +1,2 @@
+../Core/Src/kalman.c:35:6:Acc_ptich_roll_Kalman	72	static
+../Core/Src/kalman.c:103:8:Kalman_filter	88	static
