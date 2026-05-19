@@ -1,0 +1,8 @@
+../Core/Src/CyberMove.c:35:6:BodyMove	8	static
+../Core/Src/CyberMove.c:105:6:CyberFrontAngle	8	static
+../Core/Src/CyberMove.c:121:6:CyberBackAngle	8	static
+../Core/Src/CyberMove.c:136:6:CyberUpDown	8	static
+../Core/Src/CyberMove.c:187:6:CyberRollLeft	8	static
+../Core/Src/CyberMove.c:203:6:CyberRollRight	8	static
+../Core/Src/CyberMove.c:220:6:SpeedLimit	8	static
+../Core/Src/CyberMove.c:259:6:CyberDummyRequest	8	static

@@ -1,5 +1,0 @@
-../Core/Src/mpu6050.c:55:9:MPU6050_Init	40	static
-../Core/Src/mpu6050.c:88:6:MPU6050_Read_Accel	40	static
-../Core/Src/mpu6050.c:110:6:MPU6050_Read_Gyro	40	static
-../Core/Src/mpu6050.c:132:6:MPU6050_Read_Temp	40	static
-../Core/Src/mpu6050.c:145:6:MPU6050_Read_All	48	static

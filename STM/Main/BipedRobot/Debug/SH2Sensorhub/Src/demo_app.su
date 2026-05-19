@@ -1,0 +1,12 @@
+../SH2Sensorhub/Src/demo_app.c:41:6:DWT_Init	4	static
+../SH2Sensorhub/Src/demo_app.c:48:10:DWT_GetMicros	4	static
+../SH2Sensorhub/Src/demo_app.c:56:12:hal_open	16	static
+../SH2Sensorhub/Src/demo_app.c:57:13:hal_close	16	static
+../SH2Sensorhub/Src/demo_app.c:59:12:hal_read	40	static
+../SH2Sensorhub/Src/demo_app.c:89:12:hal_write	32	static
+../SH2Sensorhub/Src/demo_app.c:97:17:hal_getTimeUs	16	static
+../SH2Sensorhub/Src/demo_app.c:106:13:sensorCallback	120	static
+../SH2Sensorhub/Src/demo_app.c:148:13:eventCallback	40	static
+../SH2Sensorhub/Src/demo_app.c:163:6:BNO_Init	64	static
+../SH2Sensorhub/Src/demo_app.c:205:6:BNO_App	40	static
+../SH2Sensorhub/Src/demo_app.c:234:6:HAL_GPIO_EXTI_Callback	16	static

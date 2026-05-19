@@ -1,0 +1,3 @@
+../Core/Src/Controllers.c:77:6:LateralController	1
+../Core/Src/Controllers.c:85:6:LQR_controllerLR	1
+../Core/Src/Controllers.c:98:6:LQR_controller	1

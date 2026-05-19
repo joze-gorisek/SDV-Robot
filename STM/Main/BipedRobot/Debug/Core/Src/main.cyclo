@@ -1,0 +1,12 @@
+../Core/Src/main.c:196:5:__io_putchar	1
+../Core/Src/main.c:202:6:Debug_EXTI_Config	1
+../Core/Src/main.c:258:5:main	2
+../Core/Src/main.c:504:6:SystemClock_Config	3
+../Core/Src/main.c:552:13:MX_CAN1_Init	2
+../Core/Src/main.c:600:13:MX_I2C3_Init	2
+../Core/Src/main.c:634:13:MX_TIM6_Init	3
+../Core/Src/main.c:672:13:MX_UART5_Init	2
+../Core/Src/main.c:705:13:MX_USART2_UART_Init	2
+../Core/Src/main.c:736:13:MX_DMA_Init	1
+../Core/Src/main.c:754:13:MX_GPIO_Init	1
+../Core/Src/main.c:848:6:Error_Handler	1
