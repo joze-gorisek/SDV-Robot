@@ -295,7 +295,7 @@ static void StateData_Update(void)
 {
 	state_data[0] = (distnacex01 + distnacex30) * 0.5f;       // Robot position x [m]
 	state_data[1] = (DDSvelocity01 + DDSvelocity30) * 0.5f;   // Robot speed v [m/s]
-	state_data[2] = robot_data[10] * (3.141592653589793f / 180.0f);    // Robot angle theta, BNO roll [deg]
+	state_data[2] = robot_data[10] //* (3.141592653589793f / 180.0f);    // Robot angle theta, BNO roll [rad]
 	state_data[3] = robot_data[13];                           // Robot angular speed omega, BNO gyro X [rad/s]
 }
 
