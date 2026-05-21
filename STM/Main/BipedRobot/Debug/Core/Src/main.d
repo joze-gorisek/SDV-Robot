@@ -32,12 +32,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/DDSM115.h ../Core/Inc/mpu6050.h ../Core/Inc/main.h \
  ../Core/Inc/CyberGear.h ../Core/Inc/MRF24J40.h \
- ../Core/Src/../../SH2Sensorhub/Inc/demo_app.h \
- ../Core/Src/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/sh2.h \
- ../Core/Src/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/sh2_hal.h \
- ../Core/Src/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/sh2_err.h \
- ../Core/Src/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/sh2_SensorValue.h \
- ../Core/Src/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/sh2.h
+ ../SH2\ Sensorhub/Inc/demo_app.h ../SH2\ Sensorhub/Inc/sh2.h \
+ ../SH2\ Sensorhub/Inc/sh2_hal.h ../SH2\ Sensorhub/Inc/sh2_SensorValue.h \
+ ../SH2\ Sensorhub/Inc/sh2_err.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -75,9 +72,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/main.h:
 ../Core/Inc/CyberGear.h:
 ../Core/Inc/MRF24J40.h:
-../Core/Src/../../SH2Sensorhub/Inc/demo_app.h:
-../Core/Src/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/sh2.h:
-../Core/Src/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/sh2_hal.h:
-../Core/Src/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/sh2_err.h:
-../Core/Src/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/sh2_SensorValue.h:
-../Core/Src/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/../../SH2Sensorhub/Inc/sh2.h:
+../SH2\ Sensorhub/Inc/demo_app.h:
+../SH2\ Sensorhub/Inc/sh2.h:
+../SH2\ Sensorhub/Inc/sh2_hal.h:
+../SH2\ Sensorhub/Inc/sh2_SensorValue.h:
+../SH2\ Sensorhub/Inc/sh2_err.h:

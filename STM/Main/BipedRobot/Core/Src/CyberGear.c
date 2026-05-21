@@ -238,6 +238,11 @@ void PositionSpeedLimit(float SpeedLimit, uint8_t hostID, uint8_t motorID)
 void SetAngle(float Angle, uint8_t hostID, uint8_t motorID) //Works only in POSITION MODE!
 {
 	// 0x7016 - Position mode angle command:  Angle[rad]   (Communication type=18)
+	if (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) == 0U)
+	{
+		return;
+	}
+
 	 writeParameter(0x7016, &Angle, hostID, motorID); //Position
 }
 
@@ -522,28 +527,28 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 
   	  switch(motorID_Prekinitev) {
-  	  case 100:
+  	  case CYBER_MOTOR_1_ID:
   		  MOTangle100 = MOTangle;
   		  MOTvelocity100=MOTvelocity;
   		  MOTtorque100=MOTtorque;
   		  MOTtemp100=MOTtemp;
   		  MOTrpm100 =MOTrpm;
   		  break;
-  	  case 9:
+  	  case CYBER_MOTOR_2_ID:
   		  MOTangle9 = MOTangle;
   		  MOTvelocity9=MOTvelocity;
   		  MOTtorque9=MOTtorque;
   		  MOTtemp9=MOTtemp;
   		  MOTrpm9 =MOTrpm;
   		  break;
-  	  case 11:
+  	  case CYBER_MOTOR_4_ID:
   		  MOTangle11 = MOTangle;
   		  MOTvelocity11=MOTvelocity;
   		  MOTtorque11=MOTtorque;
   		  MOTtemp11=MOTtemp;
   		  MOTrpm11 =MOTrpm;
   		  break;
-  	  case 10:
+  	  case CYBER_MOTOR_3_ID:
   		  MOTangle10 = MOTangle;
   		  MOTvelocity10=MOTvelocity;
   		  MOTtorque10=MOTtorque;

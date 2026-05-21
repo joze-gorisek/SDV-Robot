@@ -16,7 +16,7 @@ extern Kalman_t KalmanY;
 
 
 /*Drive Wheels*/
-extern float DDSangle01;       //Current angle    [0-32767] -> [0 360]   address= 0x01 over RS485
+extern float DDSangle01;       //Current angle    [0-32767] -> [0 360]   address= 0x10 over RS485
 extern float DDSrpm01;         //Current velocity [0-     ] -> [-330RPM  330RPM]
 extern float DDScurrent01;     //Current Torque   [-32767   32767] -> [-8A   8A]
 extern float DDSvelocityRadial01;    //Velocity

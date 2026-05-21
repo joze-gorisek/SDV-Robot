@@ -111,8 +111,8 @@ void CyberFrontAngle(void)
 	      else if(front_angle<0)
 	    	  front_angle=0.0;
 
-		  SetAngle(front_angle,/*hostID=*/0x00, /*motorID=*/100);
-		  SetAngle(-front_angle,/*hostID=*/0x00, /*motorID=*/9);
+		  SetAngle(front_angle,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_1_ID);
+		  SetAngle(-front_angle,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_2_ID);
 	//}
 
 }
@@ -125,8 +125,8 @@ void CyberBackAngle(void)
 	  else if(back_angle<0)
 		  back_angle=0.0;
 
-		SetAngle(-back_angle,/*hostID=*/0x00, /*motorID=*/10);
-		SetAngle(back_angle,/*hostID=*/0x00, /*motorID=*/11);
+		SetAngle(-back_angle,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_3_ID);
+		SetAngle(back_angle,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_4_ID);
 	//}
 
 }
@@ -156,13 +156,13 @@ void CyberUpDown(void)
 
     if(Cybercounter==1)
     {
-    	 SetAngle( Up_angle,/*hostID=*/0x00, /*motorID=*/100);
-    	 SetAngle(-Up_angle,/*hostID=*/0x00, /*motorID=*/9);
+    	 SetAngle( Up_angle,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_1_ID);
+    	 SetAngle(-Up_angle,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_2_ID);
 
     }else if (Cybercounter==2)
     {
-		 SetAngle(-Up_angle,/*hostID=*/0x00, /*motorID=*/10);
-		 SetAngle( Up_angle,/*hostID=*/0x00, /*motorID=*/11);
+		 SetAngle(-Up_angle,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_3_ID);
+		 SetAngle( Up_angle,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_4_ID);
 
 			/*Update values*/
 				Up_angle_old=Up_angle;
@@ -193,8 +193,8 @@ void CyberRollLeft(void)
 			  roll_left=0.0;
 
 
-		  SetAngle(-roll_left,/*hostID=*/0x00, /*motorID=*/9);
-		  SetAngle(roll_left,/*hostID=*/0x00, /*motorID=*/11);
+		  SetAngle(-roll_left,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_2_ID);
+		  SetAngle(roll_left,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_4_ID);
 
 
 }
@@ -208,8 +208,8 @@ void CyberRollRight(void)
 			  roll_right=0.0;
 
 
-	  SetAngle(roll_right,/*hostID=*/0x00, /*motorID=*/100);
-	  SetAngle(-roll_right,/*hostID=*/0x00, /*motorID=*/10);
+	  SetAngle(roll_right,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_1_ID);
+	  SetAngle(-roll_right,/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_3_ID);
 
 
 }
@@ -235,14 +235,14 @@ void SpeedLimit()
 	    if(Cybercounter==1)
 	    {
 
-	  	  PositionSpeedLimit(speedLimit, 0x00, 100);
-	  	  PositionSpeedLimit(speedLimit, 0x00, 9);
+	  	  PositionSpeedLimit(speedLimit, CYBER_HOST_ID, CYBER_MOTOR_1_ID);
+	  	  PositionSpeedLimit(speedLimit, CYBER_HOST_ID, CYBER_MOTOR_2_ID);
 
 	    }else if (Cybercounter==2)
 	    {
 
-	      PositionSpeedLimit(speedLimit, 0x00, 10);
-	  	  PositionSpeedLimit(speedLimit, 0x00, 11);
+	      PositionSpeedLimit(speedLimit, CYBER_HOST_ID, CYBER_MOTOR_3_ID);
+	  	  PositionSpeedLimit(speedLimit, CYBER_HOST_ID, CYBER_MOTOR_4_ID);
 
 				/*Update values*/
 	  	     speedLimit_old=speedLimit;

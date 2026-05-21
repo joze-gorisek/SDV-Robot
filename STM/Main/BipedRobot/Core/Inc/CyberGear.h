@@ -25,6 +25,12 @@
 #define T_MAX   12.0f
 #define PI      3.14159f
 
+#define CYBER_HOST_ID     0xFEU
+#define CYBER_MOTOR_1_ID  17U
+#define CYBER_MOTOR_2_ID  18U
+#define CYBER_MOTOR_3_ID  19U
+#define CYBER_MOTOR_4_ID  20U
+
 
 /* MOTOR ID*/
 void getMotorDeviceID(uint8_t hostID, uint8_t motorID);

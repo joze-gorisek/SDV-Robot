@@ -28,9 +28,7 @@
 #include "mpu6050.h"
 #include "CyberGear.h"
 #include "MRF24J40.h"
-#include <stdio.h>
-
-#include "../../SH2Sensorhub/Inc/demo_app.h"
+#include "demo_app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,6 +39,13 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+#define DDSM_LEFT_ID      0x10U
+#define DDSM_RIGHT_ID     0x30U
+#define DDSM_PENDING_NONE 0x00U
+#define DDSM_FEEDBACK_TIMEOUT_MS 10U
+#define DEBUG_PRINT_INTERVAL_MS 20U
+#define BUTTON_DEBOUNCE_MS 300U
+#define DEG_TO_RAD (PI / 180.0f)
 
 /* USER CODE END PD */
 
@@ -97,6 +102,8 @@ float MOTtemp9=0;       //Temperature  10*Celsius
 float MOTrpm9 =0;       //Current RPM
 
 volatile uint8_t button_step_requested = 0;
+float robot_data[ROBOT_DATA_SIZE] = {0};
+float state_data[4] = {0};
 
 float MOTangle11=0;      //Current angle    [0-65535] -> [-4pi  4pi]
 float MOTvelocity11=0;   //Current velocity [0-65535] -> [-30rad/s  30rad/s]
@@ -105,20 +112,34 @@ float MOTtemp11=0;       //Temperature  10*Celsius
 float MOTrpm11 =0;       //Current RPM
 
 /*Drive Wheels*/
-extern float DDSangle01;       //Current angle    [0-32767] -> [0 360]   address= 0x01 over RS485
+extern float DDSangle01;       //Current angle    [0-32767] -> [0 360]   address= 0x10 over RS485
 extern float DDSrpm01;         //Current velocity [0-     ] -> [-330RPM  330RPM]
 extern float DDScurrent01;     //Current Torque   [-32767   32767] -> [-8A   8A]
 extern float DDSvelocityRadial01;    //Velocity
+extern float DDSvelocity01;          //Translational velocity [m/s]
+extern float distnacex01;            //Translational distance [m]
 
 extern float DDSangle30;       //Current angle    [0-32767] -> [0 360]   address= 0x30 over RS485
 extern float DDSrpm30;         //Current velocity [0-     ] -> [-330RPM  330RPM]
 extern float DDScurrent30;     //Current Torque   [-32767   32767] -> [-8A   8A]
 extern float DDSvelocityRadial30;    //Velocity
+extern float DDSvelocity30;          //Translational velocity [m/s]
+extern float distnacex30;            //Translational distance [m]
 
 float desired_angle ;
 float desired_angle2 ;
 float desired_angle3 ;
 float desired_angle4 ;
+float ddsm_left_current_cmd = 0.0f;
+float ddsm_right_current_cmd = 0.0f;
+volatile uint8_t ddsm_pending_motor_id = DDSM_PENDING_NONE;
+volatile uint32_t ddsm_left_feedback_count = 0U;
+volatile uint32_t ddsm_right_feedback_count = 0U;
+volatile uint32_t ddsm_feedback_timeout_count = 0U;
+static uint8_t ddsm_next_motor_id = DDSM_LEFT_ID;
+static uint32_t ddsm_pending_tick = 0U;
+static uint32_t debug_last_tick = 0U;
+static uint8_t cyber_next_motor_index = 0U;
 
 extern float front_angle;
 extern float back_angle;
@@ -174,6 +195,13 @@ extern double roll_kalman, pitch_kalman;
 
 /* USER CODE END PV */
 
+// Retarget printf to UART
+int __io_putchar(int ch)
+{
+    HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+    return ch;
+}
+
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
@@ -189,25 +217,15 @@ void serialWrite(char data[]);
 void serialProcessRxData();
 //void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 static uint16_t float_to_uint(float x, float x_min, float x_max);
+static HAL_StatusTypeDef UART5_StartReceiveDmaIfReady(void);
+static void DDSM_Service(void);
+static void DDSM_HandleFeedback(uint8_t motor_id);
+static void CyberGear_Service(void);
+static void RobotData_Update(void);
+static void StateData_Update(void);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 //void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size);
 
-// Retarget printf to UART
-int __io_putchar(int ch)
-{
-    HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
-    return ch;
-}
-
-void Debug_EXTI_Config(void)
-{
-    // Read EXTI_RTSR and EXTI_FTSR for line 1
-    uint32_t rtsr = EXTI->RTSR;  // rising trigger
-    uint32_t ftsr = EXTI->FTSR;  // falling trigger
-
-    printf("EXTI RTSR bit1: %lu\r\n", (rtsr >> 1) & 1);  // should be 0
-    printf("EXTI FTSR bit1: %lu\r\n", (ftsr >> 1) & 1);  // should be 1
-}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -248,6 +266,113 @@ void Debug_EXTI_Config(void)
 	extern float DDSangle01m_old;
 	extern float DDSangle30m_old;
 
+static HAL_StatusTypeDef UART5_StartReceiveDmaIfReady(void)
+{
+	if (huart5.RxState == HAL_UART_STATE_READY)
+	{
+		return HAL_UART_Receive_DMA(&huart5, (uint8_t *)buffer485, sizeof(buffer485));
+	}
+
+	return HAL_BUSY;
+}
+
+static void RobotData_Update(void)
+{
+	robot_data[0] = distnacex01;             // DDSM left distance [m]
+	robot_data[1] = distnacex30;             // DDSM right distance [m]
+	robot_data[2] = DDSvelocity01;           // DDSM left speed [m/s]
+	robot_data[3] = DDSvelocity30;           // DDSM right speed [m/s]
+
+	robot_data[4] = MOTangle100;             // CyberGear motor 1 position [rad]
+	robot_data[5] = MOTangle9;               // CyberGear motor 2 position [rad]
+	robot_data[6] = MOTangle10;              // CyberGear motor 3 position [rad]
+	robot_data[7] = MOTangle11;              // CyberGear motor 4 position [rad]
+	robot_data[8] = DDSangle01 * DEG_TO_RAD; // DDSM left position [rad]
+	robot_data[9] = DDSangle30 * DEG_TO_RAD; // DDSM right position [rad]
+}
+
+static void StateData_Update(void)
+{
+	state_data[0] = (distnacex01 + distnacex30) * 0.5f;       // Robot position x [m]
+	state_data[1] = (DDSvelocity01 + DDSvelocity30) * 0.5f;   // Robot speed v [m/s]
+	state_data[2] = robot_data[10] * (3.141592653589793f / 180.0f);    // Robot angle theta, BNO roll [deg]
+	state_data[3] = robot_data[13];                           // Robot angular speed omega, BNO gyro X [rad/s]
+}
+
+static void DDSM_Service(void)
+{
+	uint8_t pending_motor = ddsm_pending_motor_id;
+
+	if (pending_motor != DDSM_PENDING_NONE)
+	{
+		if ((HAL_GetTick() - ddsm_pending_tick) >= DDSM_FEEDBACK_TIMEOUT_MS)
+		{
+			ddsm_feedback_timeout_count++;
+			ddsm_pending_motor_id = DDSM_PENDING_NONE;
+			ddsm_next_motor_id = (pending_motor == DDSM_LEFT_ID) ? DDSM_RIGHT_ID : DDSM_LEFT_ID;
+			HAL_UART_AbortReceive(&huart5);
+			(void)UART5_StartReceiveDmaIfReady();
+		}
+
+		return;
+	}
+
+	uint8_t motor_id = ddsm_next_motor_id;
+	float current_cmd = (motor_id == DDSM_LEFT_ID) ? ddsm_left_current_cmd : ddsm_right_current_cmd;
+
+	ddsm_pending_motor_id = motor_id;
+	ddsm_pending_tick = HAL_GetTick();
+	sendCurrentCommand(motor_id, current_cmd);
+	ddsm_next_motor_id = (motor_id == DDSM_LEFT_ID) ? DDSM_RIGHT_ID : DDSM_LEFT_ID;
+}
+
+static void DDSM_HandleFeedback(uint8_t motor_id)
+{
+	if (motor_id == DDSM_LEFT_ID)
+	{
+		ddsm_left_feedback_count++;
+	}
+	else if (motor_id == DDSM_RIGHT_ID)
+	{
+		ddsm_right_feedback_count++;
+	}
+
+	if (ddsm_pending_motor_id == motor_id)
+	{
+		ddsm_pending_motor_id = DDSM_PENDING_NONE;
+	}
+}
+
+static void CyberGear_Service(void)
+{
+	if (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) == 0U)
+	{
+		return;
+	}
+
+	switch (cyber_next_motor_index)
+	{
+		case 0U:
+			SetAngle(desired_angle, CYBER_HOST_ID, CYBER_MOTOR_1_ID);
+			break;
+		case 1U:
+			SetAngle(desired_angle2, CYBER_HOST_ID, CYBER_MOTOR_2_ID);
+			break;
+		case 2U:
+			SetAngle(desired_angle3, CYBER_HOST_ID, CYBER_MOTOR_3_ID);
+			break;
+		default:
+			SetAngle(desired_angle4, CYBER_HOST_ID, CYBER_MOTOR_4_ID);
+			break;
+	}
+
+	cyber_next_motor_index++;
+	if (cyber_next_motor_index >= 4U)
+	{
+		cyber_next_motor_index = 0U;
+	}
+}
+
 
 /* USER CODE END 0 */
 
@@ -267,6 +392,7 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
+
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -283,11 +409,10 @@ int main(void)
   MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_CAN1_Init();
-  MX_TIM6_Init();
+  //MX_TIM6_Init();
   MX_I2C3_Init();
   MX_UART5_Init();
   /* USER CODE BEGIN 2 */
-
 
   // UART
   //__HAL_UART_ENABLE_IT(&huart2, UART_IT_TC);
@@ -299,6 +424,7 @@ int main(void)
   /*MPU 6050*/
   //MPU6050_Init(&hi2c3);
 
+  BNO_Init(&hi2c3, &huart2, INT_Pin);
 
   /*  Start CAN */
   HAL_CAN_Start(&hcan1);
@@ -315,96 +441,96 @@ int main(void)
 	  {
 		  // ADD code
 		  /* Clear fault */
-		    clearMotorFault(/*hostID=*/0x00, /*motorID=*/25);
+		    clearMotorFault(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_1_ID);
 		    HAL_Delay(10);
-		    clearMotorFault(/*hostID=*/0x00, /*motorID=*/26);
+		    clearMotorFault(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_2_ID);
 		    HAL_Delay(10);
-		    clearMotorFault(/*hostID=*/0x00, /*motorID=*/27);
+		    clearMotorFault(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_3_ID);
 		    HAL_Delay(10);
-		    clearMotorFault(/*hostID=*/0x00, /*motorID=*/28);
+		    clearMotorFault(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_4_ID);
 		    HAL_Delay(10);
 
 		    /*Position Mode - 0x01*/
-		    MotorControlMode(/*Mode*/0x01,/*hostID=*/ 0x00, /*motorID=*/ 25);
+		    MotorControlMode(/*Mode*/0x01,/*hostID=*/ CYBER_HOST_ID, /*motorID=*/ CYBER_MOTOR_1_ID);
 		    HAL_Delay(50);
-		    MotorControlMode(0x01,0x00,26);
+		    MotorControlMode(0x01,CYBER_HOST_ID,CYBER_MOTOR_2_ID);
 		    HAL_Delay(50);
-		    MotorControlMode(0x01,0x00,27);
+		    MotorControlMode(0x01,CYBER_HOST_ID,CYBER_MOTOR_3_ID);
 		    HAL_Delay(50);
-		    MotorControlMode(0x01,0x00,28);
+		    MotorControlMode(0x01,CYBER_HOST_ID,CYBER_MOTOR_4_ID);
 		    HAL_Delay(50);
 
-		    PositionSpeedLimit(speedLimit, 0x00, 25);
+		    PositionSpeedLimit(speedLimit, CYBER_HOST_ID, CYBER_MOTOR_1_ID);
 		    HAL_Delay(50);
-		    PositionSpeedLimit(speedLimit, 0x00, 26);
+		    PositionSpeedLimit(speedLimit, CYBER_HOST_ID, CYBER_MOTOR_2_ID);
 		    HAL_Delay(50);
-		    PositionSpeedLimit(speedLimit, 0x00, 27);
+		    PositionSpeedLimit(speedLimit, CYBER_HOST_ID, CYBER_MOTOR_3_ID);
 		    HAL_Delay(50);
-		    PositionSpeedLimit(speedLimit, 0x00, 28);
+		    PositionSpeedLimit(speedLimit, CYBER_HOST_ID, CYBER_MOTOR_4_ID);
 		    HAL_Delay(50);
 
 		    /* Mechanical ZERO */
-		    setMechanicalZero(0x00,25);
+		    setMechanicalZero(CYBER_HOST_ID,CYBER_MOTOR_1_ID);
 		    HAL_Delay(50);
-		    setMechanicalZero(0x00,26);
+		    setMechanicalZero(CYBER_HOST_ID,CYBER_MOTOR_2_ID);
 		    HAL_Delay(50);
-		    setMechanicalZero(0x00,27);
+		    setMechanicalZero(CYBER_HOST_ID,CYBER_MOTOR_3_ID);
 		    HAL_Delay(50);
-		    setMechanicalZero(0x00,28);
+		    setMechanicalZero(CYBER_HOST_ID,CYBER_MOTOR_4_ID);
 		    HAL_Delay(100);
 
 		    /* Enable motor */
-		    motorEnable(/*hostID=*/0x00, /*motorID=*/25);
+		    motorEnable(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_1_ID);
 		    HAL_Delay(50);
-		    motorEnable(/*hostID=*/0x00, /*motorID=*/26);
+		    motorEnable(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_2_ID);
 		    HAL_Delay(50);
-		    motorEnable(/*hostID=*/0x00, /*motorID=*/27);
+		    motorEnable(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_3_ID);
 		    HAL_Delay(50);
-		    motorEnable(/*hostID=*/0x00, /*motorID=*/28);
+		    motorEnable(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_4_ID);
 		    HAL_Delay(50);
 
 	  }
 	  else //Position mode
 	  {
 		  /* Clear fault */
-		    clearMotorFault(/*hostID=*/0x00, /*motorID=*/25);
+		    clearMotorFault(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_1_ID);
 		    HAL_Delay(10);
-		    clearMotorFault(/*hostID=*/0x00, /*motorID=*/26);
+		    clearMotorFault(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_2_ID);
 		    HAL_Delay(10);
-		    clearMotorFault(/*hostID=*/0x00, /*motorID=*/27);
+		    clearMotorFault(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_3_ID);
 		    HAL_Delay(10);
-		    clearMotorFault(/*hostID=*/0x00, /*motorID=*/28);
+		    clearMotorFault(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_4_ID);
 		    HAL_Delay(10);
 
 		    /* Mechanical ZERO */
-		    setMechanicalZero(0x00,25);
+		    setMechanicalZero(CYBER_HOST_ID,CYBER_MOTOR_1_ID);
 		    HAL_Delay(50);
-		    setMechanicalZero(0x00,26);
+		    setMechanicalZero(CYBER_HOST_ID,CYBER_MOTOR_2_ID);
 		    HAL_Delay(50);
-		    setMechanicalZero(0x00,27);
+		    setMechanicalZero(CYBER_HOST_ID,CYBER_MOTOR_3_ID);
 		    HAL_Delay(50);
-		    setMechanicalZero(0x00,28);
+		    setMechanicalZero(CYBER_HOST_ID,CYBER_MOTOR_4_ID);
 		    HAL_Delay(100);
 
 
 		    /* MIT Mode- 0x00 */
-		    MotorControlMode(/*Mode*/0x00,/*hostID=*/ 0x00, /*motorID=*/ 25);
+		    MotorControlMode(/*Mode*/0x00,/*hostID=*/ CYBER_HOST_ID, /*motorID=*/ CYBER_MOTOR_1_ID);
 		    HAL_Delay(50);
-		    MotorControlMode(0x00,0x00,26);
+		    MotorControlMode(0x00,CYBER_HOST_ID,CYBER_MOTOR_2_ID);
 		    HAL_Delay(50);
-		    MotorControlMode(0x00,0x00,27);
+		    MotorControlMode(0x00,CYBER_HOST_ID,CYBER_MOTOR_3_ID);
 		    HAL_Delay(50);
-		    MotorControlMode(0x00,0x00,28);
+		    MotorControlMode(0x00,CYBER_HOST_ID,CYBER_MOTOR_4_ID);
 		    HAL_Delay(50);
 
 		    /* Enable motor */
-		    motorEnable(/*hostID=*/0x00, /*motorID=*/25);
+		    motorEnable(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_1_ID);
 		    HAL_Delay(50);
-		    motorEnable(/*hostID=*/0x00, /*motorID=*/26);
+		    motorEnable(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_2_ID);
 		    HAL_Delay(50);
-		    motorEnable(/*hostID=*/0x00, /*motorID=*/27);
+		    motorEnable(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_3_ID);
 		    HAL_Delay(50);
-		    motorEnable(/*hostID=*/0x00, /*motorID=*/28);
+		    motorEnable(/*hostID=*/CYBER_HOST_ID, /*motorID=*/CYBER_MOTOR_4_ID);
 		    HAL_Delay(50);
 
 		  // ADD code
@@ -412,7 +538,6 @@ int main(void)
 	  }
 
    /* LEVEL CyberGear MOtors*/
-  HAL_UART_Receive_DMA(&huart5,buffer485,10);
 
   /****************     END of CyberGear Settings   *******************/
 
@@ -423,24 +548,16 @@ int main(void)
 //	ChangeMotorID(0x30);
 //	GetMotorID();
 //	HAL_Delay(100);
-//	if (GetMotorID() == 0x01) break;
+//	if (GetMotorID() == DDSM_LEFT_ID) break;
 //}
-//CurrentMode(0x01);
-//	  HAL_Delay(4);
-//	  CurrentMode(0x30);
-//	  HAL_Delay(4);
-//
-//	  /*Take initial values from DDSM motor encoders*/
-//	  sendCurrentCommand(0x30, 0); //Send iq value
-//	  HAL_Delay(4);
-//	  sendCurrentCommand(0x01, 0);
-//	  HAL_Delay(4);
-//
-//                    // ADD code for DDSM115
-// sendCurrentCommand(0x30, /*iq*/ 0.4); //Send iq value
-// 	  HAL_Delay(4);
-// 	  sendCurrentCommand(0x01, /*iq*/ 0.2);
-// 	  HAL_Delay(4);
+
+	  (void)UART5_StartReceiveDmaIfReady();
+
+	  CurrentMode(DDSM_LEFT_ID);
+	  sendCurrentCommand(DDSM_LEFT_ID, 0.00f); // LEVI
+
+	  CurrentMode(DDSM_RIGHT_ID);
+	  sendCurrentCommand(DDSM_RIGHT_ID, 0.00f); // DESNI
 
   /****************  END of  DDSM115 Motor settings  *****************/
 
@@ -449,53 +566,201 @@ int main(void)
 
    /*Start timer interrupt for MPU6050 and Controller execution*/
 	 //HAL_TIM_Base_Start_IT(&htim6);
-	 HAL_UART_Transmit(&huart2,"\n\rRun :",7,1000);
-
-
-	 //BNO settings
-  Debug_EXTI_Config();
-  BNO_Init(&hi2c3,&huart2,INT_Pin);
-
+	 //HAL_UART_Transmit(&huart2,"\n\rRun :",7,1000);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  float vector[4] = {0};
+	  ddsm_right_current_cmd = 0.0f;
+	  ddsm_left_current_cmd = 0.0f;
+	  DDSM_Service();
+
+	  HAL_Delay(1000);
+
+	 float xd, x;
+	 float vd, v;
+	 float fid, fi;
+	 float wd, w;
+	 float u;
+	 float k = 0.5;
+	 float k1 = 0.1;
+	 float k2 = 0.1;
+	 float k3 = 5;
+	 float k4 = 3;
+
 
   while (1)
   {
-	  sh2_service();
-	  BNO_App(vector);
 
-	// izpis 3. in 4. vrednosti iz vektorja
+	  /* robot_data is only for monitoring/export; it does not change control logic.
+	   * BNO_App updates BNO fields when the BNO086 interrupt has new data.
+	   * RobotData_Update copies the latest DDSM and CyberGear feedback values.
+	   * StateData_Update creates x = [position, speed, angle, angular speed].
+	   */
+	  BNO_App(robot_data);
+	  RobotData_Update();
+	  StateData_Update();
 
-//    sprintf(buffer, "R:%6.2f | Gx:%6.3f\r\n",
-//			   vector[2],
-//			   vector[3]);
-	//HAL_UART_Transmit(&huart2,(uint8_t *)buffer, strlen(buffer), 1000);
-	 printf("R:%6.2f | Gx:%6.3f\r\n",vector[2],vector[3]);
 
-	HAL_Delay(100);
-  }
-  while (0)
-  {
 
+	  uint32_t now = HAL_GetTick();
+	  if ((now - debug_last_tick) >= DEBUG_PRINT_INTERVAL_MS)
+	  {
+		  debug_last_tick = now;
+
+		  printf("x: %7.3f\r\n"
+		         "v: %6.3f\r\n"
+		         "theta: %6.2f\r\n"
+		         "omega: %6.3f\r\n\n\n\n",
+		         state_data[0],  // Robot position x [m]
+		         state_data[1],  // Robot speed v [m/s]
+		         state_data[2],  // Robot angle theta [rad]
+		         state_data[3]); // Robot angular speed omega [rad/s]
+
+		  //////////    REGULACIJA     /////////
+
+		  xd = 0;
+		  x = state_data[0];
+		  vd = 0;
+		  v = state_data[1];
+		  fid = 0;
+		  fi = state_data[2];
+		  wd = 0;
+		  w = state_data[3];
+
+
+		  u = (k1*(xd-x) + k2*(vd-v) + k3*(fid - fi) + k4*(wd - w))*k;
+
+		  ddsm_left_current_cmd = -u/2;
+		  ddsm_right_current_cmd = u/2;
+
+
+	  }
+
+
+    (void)UART5_StartReceiveDmaIfReady();
 
     /* USER CODE END WHILE */
+
+
+	  if (button_step_requested)
+	  {
+	      button_step_requested = 0;
+
+	      if (i == 0)
+	      {
+	          desired_angle  += 1;
+	          desired_angle2 += -1;
+	          desired_angle3 += -1;
+	          desired_angle4 += 1;
+//	          ddsm_left_current_cmd = 0.2f;
+//	          ddsm_right_current_cmd = -0.2f;
+	          i = 1;
+	      }
+	      else
+	      {
+	          desired_angle  += -1;
+	          desired_angle2 += 1;
+	          desired_angle3 += 1;
+	          desired_angle4 += -1;
+//	          ddsm_left_current_cmd = 0.0f;
+//	          ddsm_right_current_cmd = 0.0f;
+	          i = 0;
+	      }
+	  }
+
+	  DDSM_Service();
+
+	  CyberGear_Service();
+
+
 
     /* USER CODE BEGIN 3 */
 
 	  /*Motor commands*/
-
-
-
-	  HAL_UART_Transmit(&huart2,"\n\rRunD :",7,1000);
-	  HAL_Delay(300);
 	  //HAL_GPIO_TogglePin(LD2_GPIO_Port,LD2_Pin);
   }
   /* USER CODE END 3 */
 }
+
+/************************************
+   END MAIN
+/**************************************
+
+
+
+/*DDS motor Callback*/
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+ {
+
+
+	if (huart->Instance == UART5)
+	{
+
+			 memcpy( Allocbuffer485,buffer485,10);
+			 (void)UART5_StartReceiveDmaIfReady();
+
+			 /*Process data*/
+			 if(Allocbuffer485[0]== DDSM_LEFT_ID) //Motor Address
+			 {
+				  DDSangle01    = (float)(Allocbuffer485[6]<<8 | Allocbuffer485[7]) * 360.0f/32767.0f  ;    //Angle   [0-32767] -> [0 360]   address= 0x10 over RS485
+				  /*MAX - MIN filter*/
+				  if(abs(DDSangle01-DDSangle01_old)<0.2) //filter noise 0.2deg
+				  {
+					  DDSangle01=DDSangle01_old;
+				  }
+				  DDSangle01_old=DDSangle01;
+
+				  //DDSangle01    = (float)(buffer485[6]<<8 | buffer485[7]) * 360.0f/32767.0f + (delatx01) ;    //Angle   [0-32767] -> [0 360]   address= 0x10 over RS485
+				  DDSrpm01            = (float)((int16_t)(Allocbuffer485[4]<<8 | Allocbuffer485[5])) * 1.0f;              //RPM [-330RPM  330RPM]
+				  DDScurrent01        = (float)((int16_t)(Allocbuffer485[2]<<8 | Allocbuffer485[3])) * 8.0f/32767.0f;              //Current Torque   [-32767   32767] -> [-8A   8A]
+				  DDSvelocityRadial01 = DDSrpm01 * 0.10472 ;    //Velocity rad/s
+				  Distnacex01();
+				  DDSM_HandleFeedback(DDSM_LEFT_ID);
+
+			 }
+			 else if(Allocbuffer485[0]== DDSM_RIGHT_ID)
+			 {
+				   DDSangle30    = (float)(Allocbuffer485[6]<<8 | Allocbuffer485[7]) * 360.0f/32767.0f ;    //Angle   [0-32767] -> [0 360]   address= 0x30 over RS485
+
+				   /*MAX - MIN filter*/
+					   if(abs(DDSangle30-DDSangle30_old)<0.2) //filter noise 0.2deg
+					   {
+						  DDSangle30=DDSangle30_old;
+					   }
+					  DDSangle30_old=DDSangle30;
+
+				   //DDSangle30    = (float)(buffer485[6]<<8 | buffer485[7]) * 360.0f/32767.0f + (delatx30);    //Angle   [0-32767] -> [0 360]   address= 0x30 over RS485
+				  DDSrpm30            = (float)((int16_t)(Allocbuffer485[4]<<8 | Allocbuffer485[5])) * 1.0f;        //RPM [-330RPM  330RPM]
+				  DDScurrent30        = (float)((int16_t)(Allocbuffer485[2]<<8 | Allocbuffer485[3])) * 8.0f/32767.0f;       //Current Torque   [-32767   32767] -> [-8A   8A]
+				  DDSvelocityRadial30 = DDSrpm30 * 0.10472 ;    //Velocity rad/s
+				  Distnacex30();
+				  DDSM_HandleFeedback(DDSM_RIGHT_ID);
+			 }
+
+	}/*END of Instance UART5*/
+
+ }
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    static uint32_t last_button_tick = 0U;
+
+    if(GPIO_Pin == BlueButton_Pin)
+    {
+        uint32_t now = HAL_GetTick();
+
+        if((now - last_button_tick) >= BUTTON_DEBOUNCE_MS)
+        {
+            last_button_tick = now;
+            button_step_requested = 1;
+        }
+    }
+
+    BNO_EXTI_Callback(GPIO_Pin);
+}
+
 
 /**
   * @brief System Clock Configuration
@@ -608,7 +873,7 @@ static void MX_I2C3_Init(void)
 
   /* USER CODE END I2C3_Init 1 */
   hi2c3.Instance = I2C3;
-  hi2c3.Init.ClockSpeed = 100000;
+  hi2c3.Init.ClockSpeed = 400000;
   hi2c3.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c3.Init.OwnAddress1 = 0;
   hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -761,8 +1026,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, MRF_RESET_Pin|SPI2_CS_MRF_Pin, GPIO_PIN_RESET);
@@ -779,18 +1044,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(BlueButton_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : INT_Pin */
+  GPIO_InitStruct.Pin = INT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(INT_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pins : MRF_RESET_Pin SPI2_CS_MRF_Pin */
   GPIO_InitStruct.Pin = MRF_RESET_Pin|SPI2_CS_MRF_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : INT_Pin */
-  GPIO_InitStruct.Pin = INT_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(INT_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : RS485_DIR_Pin LD1_Pin LD2_Pin LD3_Pin */
   GPIO_InitStruct.Pin = RS485_DIR_Pin|LD1_Pin|LD2_Pin|LD3_Pin;
@@ -807,7 +1072,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(RST_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 1);
   HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 2, 0);
