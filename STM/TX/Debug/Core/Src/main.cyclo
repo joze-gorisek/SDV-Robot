@@ -1,0 +1,10 @@
+../Core/Src/main.c:72:13:TX_SendPcCommand	6
+../Core/Src/main.c:121:16:TX_WaitMrfTxOk	6
+../Core/Src/main.c:152:16:TX_CommandIsValid	16
+../Core/Src/main.c:207:13:TX_ProcessPcCommand	3
+../Core/Src/main.c:237:5:main	10
+../Core/Src/main.c:340:6:SystemClock_Config	3
+../Core/Src/main.c:388:13:MX_SPI1_Init	2
+../Core/Src/main.c:426:13:MX_USART2_UART_Init	2
+../Core/Src/main.c:459:13:MX_GPIO_Init	1
+../Core/Src/main.c:522:6:Error_Handler	1

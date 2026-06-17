@@ -1,0 +1,12 @@
+../SH2 Sensorhub/Src/demo_app.c:40:6:DWT_Init	1
+../SH2 Sensorhub/Src/demo_app.c:47:10:DWT_GetMicros	1
+../SH2 Sensorhub/Src/demo_app.c:55:12:hal_open	1
+../SH2 Sensorhub/Src/demo_app.c:56:13:hal_close	1
+../SH2 Sensorhub/Src/demo_app.c:58:12:hal_read	8
+../SH2 Sensorhub/Src/demo_app.c:89:12:hal_write	2
+../SH2 Sensorhub/Src/demo_app.c:97:17:hal_getTimeUs	1
+../SH2 Sensorhub/Src/demo_app.c:106:13:sensorCallback	6
+../SH2 Sensorhub/Src/demo_app.c:154:13:eventCallback	2
+../SH2 Sensorhub/Src/demo_app.c:170:6:BNO_Init	7
+../SH2 Sensorhub/Src/demo_app.c:214:6:BNO_App	4
+../SH2 Sensorhub/Src/demo_app.c:252:6:BNO_EXTI_Callback	3
