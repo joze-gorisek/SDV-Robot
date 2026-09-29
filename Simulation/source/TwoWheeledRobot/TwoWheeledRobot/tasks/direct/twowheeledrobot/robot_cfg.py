@@ -1,0 +1,154 @@
+"""
+Robot articulation configuration for the custom two-wheeled robot.
+
+Purpose:
+    Connect the USD asset to Isaac Lab and define actuator groups for DDSM115
+    wheel joints, CyberGear leg joints, and passive bearing joints.
+
+Edit here when:
+    The USD path, joint-name patterns, actuator effort limits, or default
+    articulation properties need to change.
+
+Avoid changing here without also checking:
+    Joint names used in standup_env.py, residual_lqr_env.py, lqr_control.py,
+    contact sensor body names, and deployment documentation.
+"""
+
+import os
+from isaaclab.assets import ArticulationCfg
+from isaaclab.actuators import ImplicitActuatorCfg
+import isaaclab.sim as sim_utils
+
+from .sim_params import (
+    ANGULAR_DAMPING,
+    BEARING_DAMPING,
+    CYBERGEAR_DAMPING,
+    CYBERGEAR_STIFFNESS,
+    LINEAR_DAMPING,
+    MUJOCO_WHEEL_TORQUE_LIMIT,
+    MUJOCO_WHEEL_VELOCITY_LIMIT,
+    SOLVER_POSITION_ITERS,
+    SOLVER_VELOCITY_ITERS,
+    WHEEL_DRIVE_STIFFNESS,
+    WHEEL_INTERNAL_DAMPING,
+)
+
+# USD path — ColectedUSD_v2/World0.usd lives inside docs/
+_USD_PATH = os.path.normpath(os.path.join(
+    os.path.dirname(__file__),    # .../TwoWheeledRobot/tasks/direct/twowheeledrobot/
+    "..", "..", "..", "..",        # up to source/TwoWheeledRobot/
+    "docs", "ColectedUSD_v2", "World0.usd"
+))
+
+TWO_WHEELED_ROBOT_CFG = ArticulationCfg(
+    spawn=sim_utils.UsdFileCfg(
+        usd_path=_USD_PATH,
+        activate_contact_sensors=False,
+        rigid_props=sim_utils.RigidBodyPropertiesCfg(
+            disable_gravity=False,
+            retain_accelerations=False,
+            linear_damping=LINEAR_DAMPING,
+            angular_damping=ANGULAR_DAMPING,
+            max_linear_velocity=10.0,
+            max_angular_velocity=50.0,
+            max_depenetration_velocity=1.0,
+        ),
+        articulation_props=sim_utils.ArticulationRootPropertiesCfg(
+            enabled_self_collisions=False,
+            solver_position_iteration_count=SOLVER_POSITION_ITERS,
+            solver_velocity_iteration_count=SOLVER_VELOCITY_ITERS,
+        ),
+    ),
+    init_state=ArticulationCfg.InitialStateCfg(
+        pos=(0.0, 0.0, 0.06859),
+        rot=(1.0, 0.0, 0.0, 0.0),
+        # NOTE: Add initial joint positions here if the new USD requires
+        # specific rest poses for linkage joints.  Wheel joints (Revolute_13,
+        # Revolute_6) start at 0 by default.
+        joint_pos={},
+    ),
+    actuators={
+        # ------------------------------------------------------------------ #
+        # Wheel drive joints — current-controlled (DDSM115).                 #
+        #   Kt  = 0.75 Nm/A                                                  #
+        #   Absolute measured peak at wheel: 2 Nm                             #
+        #   Rated continuous training envelope: 0.96 Nm                       #
+        #   Torque-speed saturation is applied in StandupEnv.                 #
+        # ------------------------------------------------------------------ #
+        "wheel_joints": ImplicitActuatorCfg(
+            joint_names_expr=["DDSM115_Levi", "DDSM115_Desni"],
+            effort_limit_sim=MUJOCO_WHEEL_TORQUE_LIMIT,
+            velocity_limit_sim=MUJOCO_WHEEL_VELOCITY_LIMIT,
+            stiffness=WHEEL_DRIVE_STIFFNESS,
+            damping=WHEEL_INTERNAL_DAMPING,
+        ),
+        # ------------------------------------------------------------------ #
+        # CyberGear leg motors — position (PD) control via PhysX DOF drive.  #
+        #   ImplicitActuatorCfg: PhysX runs the PD internally each substep    #
+        #   (torque = kp*(q_des-q) + kd*(qd_des-qd), clipped to effort_limit) #
+        #   from the set_joint_position_target() written each control step.   #
+        #   Domain-randomized kp/kd and any runtime gain change must go       #
+        #   through write_joint_stiffness_to_sim() /                          #
+        #   write_joint_damping_to_sim() (PhysX DOF drive), NOT by mutating   #
+        #   actuator.stiffness/.damping tensors (those belong to the explicit #
+        #   IdealPDActuator path and are inert for an implicit actuator).      #
+        #                                                                    #
+        #   Sim gains (CYBERGEAR_STIFFNESS=30 Nm/rad, CYBERGEAR_DAMPING=3    #
+        #   Nm·s/rad in sim_params.py) are chosen for sim stiffness/training #
+        #   and do NOT match cybergear.c's own firmware defaults (kp=3.0,    #
+        #   kd=0.5) -- kp/kd are freely user-selectable on real hardware too #
+        #   (kp range 0–500 Nm/rad, kd range 0–5 Nm·s/rad), just a          #
+        #   different operating point, not a spec mismatch.                  #
+        #                                                                    #
+        #   effort_limit_sim=12.0 matches the datasheet's PEAK torque (23 A #
+        #   phase current); the datasheet's separate 4 N·m CONTINUOUS       #
+        #   rating (6.5 A) and its speed-dependent torque rolloff (full     #
+        #   torque only up to 240 rpm, dropping to ~0 by the 296 rpm        #
+        #   no-load speed) are NOT modeled -- unlike the DDSM115 wheels     #
+        #   (see standup_env.py's torque-speed limiter), the CyberGear here #
+        #   can hold the full 12 N·m indefinitely at any speed up to        #
+        #   velocity_limit_sim.                                             #
+        # ------------------------------------------------------------------ #
+        "cybergear_joints": ImplicitActuatorCfg(
+            joint_names_expr=["front_left", "front_right", "back_left", "back_right"],
+            effort_limit_sim=12.0,         # Nm — CyberGear peak torque (datasheet: 12 N·m @ 23 A)
+            velocity_limit=30.0,           # rad/s — not written to the sim for implicit actuators
+            # PhysX-side max joint velocity. Without this, PhysX keeps whatever
+            # maxJointVelocity the CAD->USD export stamped on the joint prim
+            # (velocity_limit above is NOT written to the sim), and PhysX
+            # actively BRAKES the joint to that speed no matter how much
+            # torque is applied — capping fast leg thrusts. 30.0 rad/s matches
+            # the datasheet max speed (296 rpm ±10% = 31.0 rad/s).
+            velocity_limit_sim=30.0,       # rad/s
+            stiffness=CYBERGEAR_STIFFNESS,  # Nm/rad — matches kp in cybergear.c
+            damping=CYBERGEAR_DAMPING,      # Nm·s/rad — matches kd in cybergear.c
+        ),
+        # ------------------------------------------------------------------ #
+        # Passive revolute joints — leg parallelogram bearings.              #
+        #   No motor; only rolling-element bearing friction.                 #
+        #                                                                    #
+        #   IMPORTANT: Isaac Lab does NOT enforce exclusive joint matching.  #
+        #   find_joints() is called independently per actuator group, so    #
+        #   ".*" would match ALL joints (including wheels and CyberGear)     #
+        #   and overwrite their PhysX stiffness=0 / effort_limit=0 since    #
+        #   bearing_joints is processed last.  Use a negative lookahead to   #
+        #   explicitly exclude the named actuator joints.                    #
+        # ------------------------------------------------------------------ #
+        "bearing_joints": ImplicitActuatorCfg(
+            joint_names_expr=[
+                "(?!DDSM115_Levi|DDSM115_Desni|front_left|front_right|back_left|back_right).+"
+            ],
+            effort_limit_sim=0.0,          # no motor torque
+            velocity_limit=50.0,
+            # PhysX-side max joint velocity for the passive parallelogram
+            # bearings. These sit in the same closed kinematic chain as the
+            # CyberGear joints — if PhysX speed-caps ANY bearing in the loop
+            # (USD default), the whole leg is speed-capped even when the
+            # driven joints are free. velocity_limit above was never written
+            # to the sim (Isaac Lab ignores it for implicit actuators).
+            velocity_limit_sim=50.0,       # rad/s
+            stiffness=0.0,                 # free to rotate
+            damping=BEARING_DAMPING,       # 0.005 Nm·s/rad — ball-bearing viscous friction
+        ),
+    },
+)

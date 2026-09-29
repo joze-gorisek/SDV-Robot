@@ -1,0 +1,35 @@
+# STM32CubeIDE / CMake build output
+Debug/
+Release/
+build/
+*.o
+*.d
+*.su
+*.cyclo
+*.elf
+*.map
+*.list
+*.idx
+
+# Python / Isaac Lab
+__pycache__/
+*.py[cod]
+*.egg-info/
+logs/
+outputs/
+wandb/
+runs/
+.ruff_cache/
+.pytest_cache/
+
+# Editor / local tooling
+.claude/
+*.~lock.*#
+.DS_Store
+
+# Third-party Windows terminal, not part of the project
+termite-3.4/
+
+# Bulky training artefacts (only the final checkpoint is kept in Simulation/pretrained)
+Simulation/rsl_rl/
+*.mp4
