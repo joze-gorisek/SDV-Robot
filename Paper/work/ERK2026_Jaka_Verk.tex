@@ -1,0 +1,112 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{erk}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usetikzlibrary{positioning}
+\graphicspath{{Images/}}
+\usepackage[top=22.5mm, bottom=22.5mm, left=22.5mm, right=22.5mm]{geometry}
+
+\usepackage{cuted}
+\usepackage{multirow}
+\usepackage{makecell}
+
+\usepackage[slovene,english]{babel}
+
+
+
+% local definitions
+\def\footnotemark{}%  to avoid footnote on cover page
+
+\begin{document}
+%make title
+\title{Uporaba spodbujevanega učenja s povratno arhitekturo GRU za kompleksne gibe dvokolesnega mobilnega robota}
+\author{Jaka Verk$$} 
+\affiliation{$$University of Maribor, Faculty of Electrical Engineering and Computer Science\\ 
+$$Koroška cesta 46, 2000 Maribor, Slovenia  }
+
+\email{E-pošta: jaka.verk@student.um.si}
+
+\maketitle
+
+%\thispagestyle{empty}
+
+\begin{abstract}{Reinforcement Learning with a Recurrent Architecture GRU for Complex Movements of a Two-Wheeled Mobile Robot}
+\input{Sections/abstract.tex}
+\end{abstract}
+
+
+\selectlanguage{slovene}
+
+
+  
+%Poglavja
+  
+%Uvod
+\input{Sections/Uvod.tex}
+
+%2. poglavje
+\input{Sections/Robot in formulacija problema.tex}
+
+%3. Ppoglavje
+\input{Sections/Učno okolje in zasnova regulatorja.tex}
+
+%Nevronska mreža
+\input{Sections/NevronskaMreža.tex}
+
+%4. Ppoglavje
+\input{Sections/Priprava za prenos v realno okolje.tex}
+  
+%5. Ppoglavje
+\input{Sections/Eksperimentalni_rezultati.tex}
+  
+%6. Ppoglavje
+\input{Sections/Zaključek.tex}
+
+
+
+  
+\small
+
+% \bibliographystyle{IEEEtran} % Or 'ieeetr' for IEEE style
+% \bibliography{bibliography.bib}  % 'references' matches the name of your .bib file 
+
+\begin{thebibliography}{5}
+
+\bibitem{Wang2025Whee}
+K.~Wang \emph{et al.}, ``Wheeled-legged robots for multi-terrain
+locomotion in plateau environments,'' \emph{Biomimetic Intelligence
+and Robotics}, vol.~5, no.~3, p.~100256, 2025.
+
+\bibitem{Rudin2022Lear}
+N.~Rudin, D.~Hoeller, P.~Reist, and M.~Hutter, ``Learning to walk in
+minutes using massively parallel deep reinforcement learning,''
+\emph{arXiv preprint arXiv:2109.11978}, 2022.
+
+\bibitem{Smirnov2025RLBe}
+I.~Smirnov and S.~Gu, ``RLBenchNet: The right network for the right
+reinforcement learning task,'' \emph{arXiv preprint
+arXiv:2505.15040}, 2025.
+
+\bibitem{Tofant2025Dife}
+J.~Tofant and D.~Gleich, ``Diferenčno vodenje agilnega
+dvokolesnega mobilnega robota,'' in \emph{Zbornik konference ERK
+2025}, Portoro\v{z}, Slovenija, 2025, pp.~597--600.
+
+\bibitem{Mittal2025Isaa}
+M.~Mittal \emph{et al.}, ``Isaac Lab: A GPU-accelerated simulation
+framework for multi-modal robot learning,'' \emph{arXiv preprint
+arXiv:2511.04831}, 2025.
+
+\end{thebibliography}
+  
+%\begin{thebibliography}{1}
+%\bibitem{ERK} ERK, http://www.ieee.si/erk/index.html 
+%\bibitem{Zbornik} B. Zajc, A. Trost: Zbornik triindvajsete mednarodne Elektrotehniške in računalniške konference ERK 2014, 22. - 24. %September 2014, Portorož, Slovenija
+
+%\end{thebibliography}
+
+\end{document}

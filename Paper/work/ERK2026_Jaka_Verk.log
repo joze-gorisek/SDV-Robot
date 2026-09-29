@@ -1,0 +1,731 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (SwiftLaTeX PDFTeX 0.3.0) (preloaded format=pdflatex 2022.2.16)  1 SEP 2026 18:46
+entering extended mode
+**ERK2026_Jaka_Verk.tex 
+(ERK2026_Jaka_Verk.tex
+LaTeX2e <2020-02-02> patch level 2
+L3 programming layer <2020-02-14> (/tex/article.cls
+Document Class: article 2019/12/20 v1.4l Standard LaTeX document class
+(/tex/size10.clo
+File: size10.clo 2019/12/20 v1.4l Standard LaTeX file (size option)
+)
+\c@part=\count167
+\c@section=\count168
+\c@subsection=\count169
+\c@subsubsection=\count170
+\c@paragraph=\count171
+\c@subparagraph=\count172
+\c@figure=\count173
+\c@table=\count174
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen134
+) (/tex/inputenc.sty
+Package: inputenc 2018/08/11 v1.3c Input encoding file
+\inpenc@prehook=\toks14
+\inpenc@posthook=\toks15
+) (erk.sty) (/tex/times.sty
+Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
+)
+(/tex/graphicx.sty
+Package: graphicx 2019/11/30 v1.2a Enhanced LaTeX Graphics (DPC,SPQR)
+ (/tex/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks16
+) (/tex/graphics.sty
+Package: graphics 2019/11/30 v1.4a Standard LaTeX Graphics (DPC,SPQR)
+ (/tex/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(/tex/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+ (/tex/pdftex.def
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen135
+\Gin@req@width=\dimen136
+) (/tex/subcaption.sty
+Package: subcaption 2020/01/22 v1.3d Sub-captions (AR)
+ (/tex/caption.sty
+Package: caption 2020/01/03 v3.4h Customizing captions (AR)
+
+(/tex/caption3.sty
+Package: caption3 2020/01/03 v1.8h caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 61.
+\captionmargin=\dimen137
+\captionmargin@=\dimen138
+\captionwidth=\dimen139
+\caption@tempdima=\dimen140
+\caption@indent=\dimen141
+\caption@parindent=\dimen142
+\caption@hangindent=\dimen143
+Package caption Info: Unknown document class (or package),
+(caption)             standard defaults will be used.
+Package caption Info: \@makecaption = \long macro:#1#2->\vskip \abovecaptionski
+p \sbox \@tempboxa {{\captionfonts #1: #2}}\ifdim \wd \@tempboxa >\hsize {\capt
+ionfonts #1: #2\par } \else \hbox to\hsize {\hfil \box \@tempboxa \hfil }\fi \v
+skip \belowcaptionskip  on input line 1082.
+)
+
+Package caption Warning: Unknown document class (or package),
+(caption)                standard defaults will be used.
+See the caption package documentation for explanation.
+
+\c@caption@flags=\count175
+\c@continuedfloat=\count176
+)
+\c@subfigure=\count177
+\c@subtable=\count178
+) (/tex/tikz.sty (/tex/pgf.sty (/tex/pgfrcs.sty (/tex/pgfutil-common.tex
+\pgfutil@everybye=\toks17
+\pgfutil@tempdima=\dimen144
+\pgfutil@tempdimb=\dimen145
+
+(/tex/pgfutil-common-lists.tex)) (/tex/pgfutil-latex.def
+\pgfutil@abb=\box45
+ (/tex/everyshi.sty
+Package: everyshi 2001/05/15 v3.00 EveryShipout Package (MS)
+))
+(/tex/pgfrcs.code.tex (/tex/pgf.revision.tex)
+Package: pgfrcs 2020/01/08 v3.1.5b (3.1.5b)
+))
+Package: pgf 2020/01/08 v3.1.5b (3.1.5b)
+ (/tex/pgfcore.sty
+(/tex/pgfsys.sty (/tex/pgfsys.code.tex
+Package: pgfsys 2020/01/08 v3.1.5b (3.1.5b)
+ (/tex/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks18
+\pgfkeys@temptoks=\toks19
+
+(/tex/pgfkeysfiltered.code.tex
+\pgfkeys@tmptoks=\toks20
+))
+\pgf@x=\dimen146
+\pgf@y=\dimen147
+\pgf@xa=\dimen148
+\pgf@ya=\dimen149
+\pgf@xb=\dimen150
+\pgf@yb=\dimen151
+\pgf@xc=\dimen152
+\pgf@yc=\dimen153
+\pgf@xd=\dimen154
+\pgf@yd=\dimen155
+\w@pgf@writea=\write3
+\r@pgf@reada=\read2
+\c@pgf@counta=\count179
+\c@pgf@countb=\count180
+\c@pgf@countc=\count181
+\c@pgf@countd=\count182
+\t@pgf@toka=\toks21
+\t@pgf@tokb=\toks22
+\t@pgf@tokc=\toks23
+\pgf@sys@id@count=\count183
+ (/tex/pgf.cfg
+File: pgf.cfg 2020/01/08 v3.1.5b (3.1.5b)
+)
+Driver file for pgf: pgfsys-pdftex.def
+ (/tex/pgfsys-pdftex.def
+File: pgfsys-pdftex.def 2020/01/08 v3.1.5b (3.1.5b)
+
+(/tex/pgfsys-common-pdf.def
+File: pgfsys-common-pdf.def 2020/01/08 v3.1.5b (3.1.5b)
+))) (/tex/pgfsyssoftpath.code.tex
+File: pgfsyssoftpath.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfsyssoftpath@smallbuffer@items=\count184
+\pgfsyssoftpath@bigbuffer@items=\count185
+)
+(/tex/pgfsysprotocol.code.tex
+File: pgfsysprotocol.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)) (/tex/xcolor.sty
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+ (/tex/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+)
+(/tex/pgfcore.code.tex
+Package: pgfcore 2020/01/08 v3.1.5b (3.1.5b)
+ (/tex/pgfmath.code.tex (/tex/pgfmathcalc.code.tex
+(/tex/pgfmathutil.code.tex) (/tex/pgfmathparser.code.tex
+\pgfmath@dimen=\dimen156
+\pgfmath@count=\count186
+\pgfmath@box=\box46
+\pgfmath@toks=\toks24
+\pgfmath@stack@operand=\toks25
+\pgfmath@stack@operation=\toks26
+)
+(/tex/pgfmathfunctions.code.tex (/tex/pgfmathfunctions.basic.code.tex)
+(/tex/pgfmathfunctions.trigonometric.code.tex)
+(/tex/pgfmathfunctions.random.code.tex)
+(/tex/pgfmathfunctions.comparison.code.tex)
+(/tex/pgfmathfunctions.base.code.tex) (/tex/pgfmathfunctions.round.code.tex)
+(/tex/pgfmathfunctions.misc.code.tex)
+(/tex/pgfmathfunctions.integerarithmetics.code.tex)))
+(/tex/pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count187
+)) (/tex/pgfint.code.tex)
+(/tex/pgfcorepoints.code.tex
+File: pgfcorepoints.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@picminx=\dimen157
+\pgf@picmaxx=\dimen158
+\pgf@picminy=\dimen159
+\pgf@picmaxy=\dimen160
+\pgf@pathminx=\dimen161
+\pgf@pathmaxx=\dimen162
+\pgf@pathminy=\dimen163
+\pgf@pathmaxy=\dimen164
+\pgf@xx=\dimen165
+\pgf@xy=\dimen166
+\pgf@yx=\dimen167
+\pgf@yy=\dimen168
+\pgf@zx=\dimen169
+\pgf@zy=\dimen170
+) (/tex/pgfcorepathconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@path@lastx=\dimen171
+\pgf@path@lasty=\dimen172
+)
+(/tex/pgfcorepathusage.code.tex
+File: pgfcorepathusage.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@shorten@end@additional=\dimen173
+\pgf@shorten@start@additional=\dimen174
+) (/tex/pgfcorescopes.code.tex
+File: pgfcorescopes.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfpic=\box47
+\pgf@hbox=\box48
+\pgf@layerbox@main=\box49
+\pgf@picture@serial@count=\count188
+)
+(/tex/pgfcoregraphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgflinewidth=\dimen175
+) (/tex/pgfcoretransformations.code.tex
+File: pgfcoretransformations.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@pt@x=\dimen176
+\pgf@pt@y=\dimen177
+\pgf@pt@temp=\dimen178
+)
+(/tex/pgfcorequick.code.tex
+File: pgfcorequick.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+) (/tex/pgfcoreobjects.code.tex
+File: pgfcoreobjects.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(/tex/pgfcorepathprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+) (/tex/pgfcorearrows.code.tex
+File: pgfcorearrows.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfarrowsep=\dimen179
+)
+(/tex/pgfcoreshade.code.tex
+File: pgfcoreshade.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@max=\dimen180
+\pgf@sys@shading@range@num=\count189
+\pgf@shadingcount=\count190
+) (/tex/pgfcoreimage.code.tex
+File: pgfcoreimage.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+(/tex/pgfcoreexternal.code.tex
+File: pgfcoreexternal.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfexternal@startupbox=\box50
+)) (/tex/pgfcorelayers.code.tex
+File: pgfcorelayers.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(/tex/pgfcoretransparency.code.tex
+File: pgfcoretransparency.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+) (/tex/pgfcorepatterns.code.tex
+File: pgfcorepatterns.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(/tex/pgfcorerdf.code.tex
+File: pgfcorerdf.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+))) (/tex/pgfmoduleshapes.code.tex
+File: pgfmoduleshapes.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfnodeparttextbox=\box51
+)
+(/tex/pgfmoduleplot.code.tex
+File: pgfmoduleplot.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+) (/tex/pgfcomp-version-0-65.sty
+Package: pgfcomp-version-0-65 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@nodesepstart=\dimen181
+\pgf@nodesepend=\dimen182
+)
+(/tex/pgfcomp-version-1-18.sty
+Package: pgfcomp-version-1-18 2020/01/08 v3.1.5b (3.1.5b)
+)) (/tex/pgffor.sty (/tex/pgfkeys.sty
+(/tex/pgfkeys.code.tex)) (/tex/pgfmath.sty (/tex/pgfmath.code.tex))
+(/tex/pgffor.code.tex
+Package: pgffor 2020/01/08 v3.1.5b (3.1.5b)
+ (/tex/pgfmath.code.tex)
+\pgffor@iter=\dimen183
+\pgffor@skip=\dimen184
+\pgffor@stack=\toks27
+\pgffor@toks=\toks28
+)) (/tex/tikz.code.tex
+Package: tikz 2020/01/08 v3.1.5b (3.1.5b)
+
+(/tex/pgflibraryplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@plot@mark@count=\count191
+\pgfplotmarksize=\dimen185
+)
+\tikz@lastx=\dimen186
+\tikz@lasty=\dimen187
+\tikz@lastxsaved=\dimen188
+\tikz@lastysaved=\dimen189
+\tikz@lastmovetox=\dimen190
+\tikz@lastmovetoy=\dimen191
+\tikzleveldistance=\dimen192
+\tikzsiblingdistance=\dimen193
+\tikz@figbox=\box52
+\tikz@figbox@bg=\box53
+\tikz@tempbox=\box54
+\tikz@tempbox@bg=\box55
+\tikztreelevel=\count192
+\tikznumberofchildren=\count193
+\tikznumberofcurrentchild=\count194
+\tikz@fig@count=\count195
+ (/tex/pgfmodulematrix.code.tex
+File: pgfmodulematrix.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfmatrixcurrentrow=\count196
+\pgfmatrixcurrentcolumn=\count197
+\pgf@matrix@numberofcolumns=\count198
+)
+\tikz@expandcount=\count199
+
+(/tex/tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+))) (/tex/amsmath.sty
+Package: amsmath 2020/01/20 v2.17e AMS math features
+\@mathmargin=\skip49
+
+For additional information on amsmath, use the `?' option.
+(/tex/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+ (/tex/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks29
+\ex@=\dimen194
+)) (/tex/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen195
+) (/tex/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count266
+LaTeX Info: Redefining \frac on input line 227.
+\uproot@=\count267
+\leftroot@=\count268
+LaTeX Info: Redefining \overline on input line 389.
+\classnum@=\count269
+\DOTSCASE@=\count270
+LaTeX Info: Redefining \ldots on input line 486.
+LaTeX Info: Redefining \dots on input line 489.
+LaTeX Info: Redefining \cdots on input line 610.
+\Mathstrutbox@=\box56
+\strutbox@=\box57
+\big@size=\dimen196
+LaTeX Font Info:    Redeclaring font encoding OML on input line 733.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
+\macc@depth=\count271
+\c@MaxMatrixCols=\count272
+\dotsspace@=\muskip16
+\c@parentequation=\count273
+\dspbrk@lvl=\count274
+\tag@help=\toks30
+\row@=\count275
+\column@=\count276
+\maxfields@=\count277
+\andhelp@=\toks31
+\eqnshift@=\dimen197
+\alignsep@=\dimen198
+\tagshift@=\dimen199
+\tagwidth@=\dimen256
+\totwidth@=\dimen257
+\lineht@=\dimen258
+\@envbody=\toks32
+\multlinegap=\skip50
+\multlinetaggap=\skip51
+\mathdisplay@stack=\toks33
+LaTeX Info: Redefining \[ on input line 2859.
+LaTeX Info: Redefining \] on input line 2860.
+)
+(/tex/tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+) (/tex/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+ (/tex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(/tex/iftex.sty
+Package: iftex 2019/11/07 v1.0c TeX engine tests
+))
+\Gm@cnth=\count278
+\Gm@cntv=\count279
+\c@Gm@tempcnt=\count280
+\Gm@bindingoffset=\dimen259
+\Gm@wd@mp=\dimen260
+\Gm@odd@mp=\dimen261
+\Gm@even@mp=\dimen262
+\Gm@layoutwidth=\dimen263
+\Gm@layoutheight=\dimen264
+\Gm@layouthoffset=\dimen265
+\Gm@layoutvoffset=\dimen266
+\Gm@dimlist=\toks34
+) (/tex/cuted.sty
+Package: cuted 2012/10/04 v1.5 Mixing onecolumn and twocolumn modes
+\At@ViperColsBreak=\toks35
+\v@aaa=\box58
+\v@ccc=\box59
+\lastskip@a=\skip52
+\lastskip@b=\skip53
+\lastskip@d=\skip54
+\lastbox@a=\box60
+\stripsep=\skip55
+\@viper=\box61
+\viper@penalty=\count281
+\hold@viper=\box62
+\ht@viper=\dimen267
+) (/tex/multirow.sty
+Package: multirow 2019/05/31 v2.5 Span multiple rows of a table
+\multirow@colwidth=\skip56
+\multirow@cntb=\count282
+\multirow@dima=\skip57
+\bigstrutjot=\dimen268
+) (/tex/makecell.sty
+Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
+
+(/tex/array.sty
+Package: array 2019/08/31 v2.4l Tabular extension package (FMi)
+\col@sep=\dimen269
+\ar@mcellbox=\box63
+\extrarowheight=\dimen270
+\NC@list=\toks36
+\extratabsurround=\skip58
+\backup@length=\skip59
+\ar@cellbox=\box64
+)
+\rotheadsize=\dimen271
+\c@nlinenum=\count283
+\TeXr@lab=\toks37
+) (/tex/babel.sty
+Package: babel 2020/02/14 3.40 The Babel package
+ (/tex/switch.def
+File: switch.def 2020/02/14 3.40 Babel switching mechanism
+) (/tex/slovene.ldf
+Language: slovene 2005/03/31 v1.2m Slovene support from the babel system
+
+(/tex/babel.def
+File: babel.def 2020/02/14 3.40 Babel common definitions
+\babel@savecnt=\count284
+\U@D=\dimen272
+ (/tex/txtbabel.def)
+\bbl@readstream=\read3
+\bbl@dirlevel=\count285
+)
+Package babel Info: Making " an active character on input line 79.
+) (/tex/english.ldf
+Language: english 2017/06/06 v3.3r English support from the babel system
+Package babel Info: \l@canadian = using hyphenrules for english
+(babel)             (\language0) on input line 102.
+Package babel Info: \l@australian = using hyphenrules for ukenglish
+(babel)             (\language59) on input line 105.
+Package babel Info: \l@newzealand = using hyphenrules for ukenglish
+(babel)             (\language59) on input line 108.
+))
+(/tex/l3backend-pdfmode.def
+File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count286
+\l__pdf_internal_box=\box65
+) (ERK2026_Jaka_Verk.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 2
+4.
+ (/tex/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+(/tex/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count287
+\scratchdimen=\dimen273
+\scratchbox=\box66
+\nofMPsegments=\count288
+\nofMParguments=\count289
+\everyMPshowfont=\toks38
+\MPscratchCnt=\count290
+\MPscratchDim=\dimen274
+\MPnumerator=\count291
+\makeMPintoPDFobject=\count292
+\everyMPtoPDFconversion=\toks39
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+ ABD: EveryShipout initializing macros
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(64.01869pt, 469.47049pt, 64.01869pt)
+* v-part:(T,H,B)=(64.01869pt, 717.00946pt, 64.01869pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=469.47049pt
+* \textheight=717.00946pt
+* \oddsidemargin=-8.2513pt
+* \evensidemargin=-8.2513pt
+* \topmargin=-45.2513pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=57.0pt
+* \marginparsep=11.0pt
+* \columnsep=14.22636pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumntrue
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+(Sections/abstract.tex
+
+LaTeX Warning: Command \textdegree invalid in math mode on input line 1.
+
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
+.
+(/tex/ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+
+LaTeX Warning: Command \textdegree invalid in math mode on input line 1.
+
+Missing character: There is no ^^b0 in font cmr10!
+
+Overfull \hbox (6.936pt too wide) in paragraph at lines 1--2
+\OT1/ptm/m/it/10 Two-wheeled robots ca-pa-ble of bal-anc-ing on a sin-gle wheel
+
+ []
+
+
+Overfull \hbox (4.06573pt too wide) in paragraph at lines 1--2
+\OT1/ptm/m/it/10 ven-tional two-wheel bal-anc-ing, with no closed-form model
+ []
+
+) (Sections/Uvod.tex
+Overfull \hbox (0.10533pt too wide) in paragraph at lines 6--7
+\OT1/ptm/m/n/10 RL [[]]. Pri-mer-jali so usmer-jene, po-vra-tne (LSTM, GRU),
+ []
+
+
+Overfull \hbox (3.52571pt too wide) in paragraph at lines 10--11
+\OT1/ptm/m/n/10 sta-vljamo prvo nau[]ceno stra-te-gijo za ohra-nja-nje rav-note
+[]zja
+ []
+
+
+Overfull \hbox (2.90631pt too wide) in paragraph at lines 12--14
+[]\OT1/ptm/m/n/10 Za re[]sevanje obrav-na-vane na-loge rav-note[]zja smo pred-
+ []
+
+
+Overfull \hbox (0.93604pt too wide) in paragraph at lines 12--14
+\OT1/ptm/m/n/10 ho-dno pre-iz-ku-sili stan-dar-dno usmer-jeno ne-vron-sko mre[]
+zo
+ []
+
+
+Overfull \hbox (8.48508pt too wide) in paragraph at lines 12--14
+\OT1/ptm/m/n/10 [[]], kjer av-torji ugo-ta-vljajo, da MLP mre[]ze si-cer omogo[
+]cajo
+ []
+
+<Images/Robot.png, id=4, 1225.57875pt x 1099.10625pt>
+File: Images/Robot.png Graphic file (type png)
+<use Images/Robot.png>
+Package pdftex.def Info: Images/Robot.png  used on input line 33.
+(pdftex.def)             Requested size: 113.81102pt x 102.05147pt.
+) (Sections/Robot in formulacija problema.tex [1{/tex/pdftex.map}
+
+
+
+]
+Overfull \hbox (3.44603pt too wide) in paragraph at lines 4--5
+[]\OT1/ptm/m/n/10 Motorji Cyber-Gear so po-zi-cij-sko vo-deni z im-pe-dan[]cno
+ []
+
+
+Overfull \hbox (5.18665pt too wide) in paragraph at lines 4--5
+\OT1/ptm/m/n/10 re-gu-la-cijo, ko-lesa DDSM115 pa to-kovno ozi-roma na-vorno.
+ []
+
+
+Overfull \hbox (5.75595pt too wide) in paragraph at lines 8--9
+\OT1/ptm/m/n/10 pitch) (slika 2b[]). Na-gib po-teka okrog vzdol[]zne osi (vstra
+n),
+ []
+
+
+Overfull \hbox (3.57617pt too wide) in paragraph at lines 8--9
+\OT1/ptm/m/n/10 med-tem ko na-klon po-teka okrog pre[]cne osi (na-prej{nazaj). 
+
+ []
+
+) (Sections/U^^c4^^8dno okolje in zasnova regulatorja.tex
+Overfull \hbox (0.55576pt too wide) in paragraph at lines 13--14
+[]\OT1/ptm/m/n/10 Agent prejme 6-razse[]zni vek-tor stanj (slika 3[]), jih pro-
+
+ []
+
+[2 <Images/Robot.png>]) (Sections/NevronskaMre^^c5^^bea.tex
+<Images/Simulation.png, id=23, 284.06125pt x 252.945pt>
+File: Images/Simulation.png Graphic file (type png)
+<use Images/Simulation.png>
+Package pdftex.def Info: Images/Simulation.png  used on input line 46.
+(pdftex.def)             Requested size: 84.50124pt x 75.24338pt.
+Missing character: There is no ; in font nullfont!
+)
+(Sections/Priprava za prenos v realno okolje.tex
+Overfull \hbox (2.33534pt too wide) in paragraph at lines 2--3
+\OT1/ptm/m/n/10 Cilj tega pri-spevka ni si-mu-la-cija sama po sebi am-pak mo[]z
+-
+ []
+
+)
+Overfull \hbox (3.2349pt too wide) in paragraph at lines 4--62
+\OT1/ptm/m/n/10 sta-nja de-lu-jejo kot im-pli-ci-tni iden-ti-fi-ka-tor spre-mi-
+njajo[]cega
+ []
+
+
+Overfull \hbox (1.94951pt too wide) in paragraph at lines 4--62
+\OT1/ptm/m/n/10 mik toka za-radi ne-si-me-trije mo-torja (od $\OMS/cmsy/m/n/10 
+^^@\OT1/cmr/m/n/10 0[]08$ \OT1/ptm/m/n/10 do $\OT1/cmr/m/n/10 0[]08$ \OT1/ptm/m
+/n/10 A),
+ []
+
+
+Overfull \hbox (1.57233pt too wide) in paragraph at lines 4--62
+\OT1/ptm/m/n/10 to-kovno ome-ji-tev po-sa-me-znega mo-torja (od $\OT1/cmr/m/n/1
+0 1[]6$ \OT1/ptm/m/n/10 do $\OT1/cmr/m/n/10 2[]4$ \OT1/ptm/m/n/10 A),
+ []
+
+(Sections/Eksperimentalni_rezultati.tex
+<Images/Episode_reward.pdf, id=24, 229.8186pt x 161.1621pt>
+File: Images/Episode_reward.pdf Graphic file (type pdf)
+<use Images/Episode_reward.pdf>
+Package pdftex.def Info: Images/Episode_reward.pdf  used on input line 7.
+(pdftex.def)             Requested size: 112.67549pt x 79.01437pt.
+<Images/Episode_length.pdf, id=25, 229.8186pt x 161.1621pt>
+File: Images/Episode_length.pdf Graphic file (type pdf)
+<use Images/Episode_length.pdf>
+Package pdftex.def Info: Images/Episode_length.pdf  used on input line 15.
+(pdftex.def)             Requested size: 112.67549pt x 79.01437pt.
+<Images/Position_reward.pdf, id=26, 229.8186pt x 161.1621pt>
+File: Images/Position_reward.pdf Graphic file (type pdf)
+<use Images/Position_reward.pdf>
+Package pdftex.def Info: Images/Position_reward.pdf  used on input line 23.
+(pdftex.def)             Requested size: 112.67549pt x 79.01437pt.
+<Images/Roll_fall_rate.pdf, id=27, 229.8186pt x 161.1621pt>
+File: Images/Roll_fall_rate.pdf Graphic file (type pdf)
+<use Images/Roll_fall_rate.pdf>
+Package pdftex.def Info: Images/Roll_fall_rate.pdf  used on input line 31.
+(pdftex.def)             Requested size: 112.67549pt x 79.01437pt.
+<Images/Rollrate_penalty.pdf, id=28, 229.8186pt x 161.1621pt>
+File: Images/Rollrate_penalty.pdf Graphic file (type pdf)
+<use Images/Rollrate_penalty.pdf>
+Package pdftex.def Info: Images/Rollrate_penalty.pdf  used on input line 39.
+(pdftex.def)             Requested size: 112.67549pt x 79.01437pt.
+<Images/Pitchrate_penalty.pdf, id=29, 229.8186pt x 161.1621pt>
+File: Images/Pitchrate_penalty.pdf Graphic file (type pdf)
+<use Images/Pitchrate_penalty.pdf>
+Package pdftex.def Info: Images/Pitchrate_penalty.pdf  used on input line 47.
+(pdftex.def)             Requested size: 112.67549pt x 79.01437pt.
+<Images/survival_rate.pdf, id=30, 229.8186pt x 161.1621pt>
+File: Images/survival_rate.pdf Graphic file (type pdf)
+<use Images/survival_rate.pdf>
+Package pdftex.def Info: Images/survival_rate.pdf  used on input line 55.
+(pdftex.def)             Requested size: 112.67549pt x 79.01437pt.
+
+Overfull \hbox (0.54613pt too wide) in paragraph at lines 66--68
+\OT1/ptm/m/n/10 Poslu[]zevanje ve[]cfaznega u[]cenja je o[]citno vi-dno pred-vs
+em
+ []
+
+
+Overfull \hbox (1.39572pt too wide) in paragraph at lines 66--68
+\OT1/ptm/m/n/10 nja s so[]casnim de-lo-va-njem vseh pe-tih mo-tor-jev (M1{M5),
+ []
+
+)
+Overfull \hbox (2.35521pt too wide) in paragraph at lines 69--65
+[]\OT1/ptm/m/n/10 Za te-sti-ra-nje de-lo-va-nja smo ustva-rili si-mu-la-cij-sko
+ oko-
+ []
+
+[3] (Sections/Zaklju^^c4^^8dek.tex
+Overfull \hbox (0.4258pt too wide) in paragraph at lines 2--3
+\OT1/ptm/m/n/10 V pri-spevku smo obrav-na-vali rav-note[]zje kolesno-no[]znega
+ []
+
+)
+Overfull \hbox (1.89609pt too wide) in paragraph at lines 4--68
+[]\OT1/ptm/m/n/10 Nadaljevanje tega dela de-fi-ni-tivno od-pira vrata za upo-
+ []
+
+
+Overfull \hbox (1.82613pt too wide) in paragraph at lines 4--68
+\OT1/ptm/m/n/10 lahko bila upo-ra-bljena za bolj[]se na-po-ve-do-va-nje na-sle-
+dnjih
+ []
+
+[4 <Images/Simulation.png> <Images/Episode_reward.pdf> <Images/Episode_length.p
+df> <Images/Position_reward.pdf> <Images/Roll_fall_rate.pdf> <Images/Rollrate_p
+enalty.pdf> <Images/Pitchrate_penalty.pdf> <Images/survival_rate.pdf>]
+(ERK2026_Jaka_Verk.aux) ) 
+Here is how much of TeX's memory you used:
+ 15335 strings out of 481249
+ 285466 string characters out of 5946731
+ 538441 words of memory out of 5000000
+ 30326 multiletter control sequences out of 15000+600000
+ 553522 words of font info for 65 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 60i,10n,62p,1810b,880s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/tex/8r.enc}</tex/cmmi10.pfb></tex/cmmi12.pfb></tex/c
+mmi7.pfb></tex/cmr10.pfb></tex/cmr7.pfb></tex/cmsy10.pfb></tex/cmsy7.pfb></tex/
+utmb8a.pfb></tex/utmr8a.pfb></tex/utmri8a.pfb>
+Output written on ERK2026_Jaka_Verk.pdf (4 pages, 718207 bytes).
+PDF statistics:
+ 321 PDF objects out of 1000 (max. 8388607)
+ 104 compressed objects within 2 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 58 words of extra memory for PDF output out of 10000 (max. 10000000)
+

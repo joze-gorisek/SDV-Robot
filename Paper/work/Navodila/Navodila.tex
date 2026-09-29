@@ -1,0 +1,97 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{erk}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage[top=22.5mm, bottom=22.5mm, left=22.5mm, right=22.5mm]{geometry}
+
+\usepackage[slovene,english]{babel}
+
+% local definitions
+\def\footnotemark{}%  to avoid footnote on cover page
+
+\begin{document}
+%make title
+\title{Navodila in osnutek prispevka za konferenco ERK}
+
+\author{Prvi Avtor$^{1}$, Drugi Avtor$^{2}$} % use ^1, ^2 for author(s) from different institutions
+
+\affiliation{$^{1}$Ime in naslov organizacije prvega avtorja\\ 
+$^{2}$Ime in naslov organizacije drugega avtorja, če je drugačna od prvega }
+
+\email{E-pošta: avtor@naslov.com}
+
+\maketitle
+
+%\thispagestyle{empty}
+
+\begin{abstract}{Instructions and Template for ERK Conference}
+For papers written in Slovene, an English title and abstract are required. The abstract should not exceed 200 words.
+
+We accept only electronic submissions in PDF format without password protection. The submission form is available on the ERK website. \cite{ERK}.
+\end{abstract}
+
+
+\selectlanguage{slovene}
+
+\section{Uvod}
+
+Prispevki za Elektrotehniško in računalniško konferenco (ERK) naj bodo napisani na papirju formata A4 v dveh stolpcih z vsemi zunanjimi robovi velikosti 2,25cm. Priporočen obseg prispevka je štiri strani, vključno s slikami. Oddani prispevek mora biti brez opomb in številk strani.
+
+\section{Pisanje prispevka}
+
+Pri pisanju uporabljajte sloge, ki so določeni v datoteki erk.sty in ne spreminjajte velikosti ali sloga pisave. Ta dokument lahko uporabite kot predlogo za oblikovanje prispevka v orodju \LaTeX.
+Tabela \ref{tab1} povzema osnovne sloge in velikosti pisave.
+
+\begin{table}[h]
+\caption{Osnovni slogi pri oblikovanju prispevka.} \label{tab1}
+\smallskip
+\begin{center}
+\begin{tabular}{ | r | c | c | }
+\hline  
+  \textbf{Text Style} & \textbf{Font Size} & \textbf{Attributes}\\ 
+\hline  
+  Paper title & 17pt & bold\\
+  Author names & 12pt & bold\\
+  Affiliation & 10pt & italic\\
+  Heading & 12pt & bold \\
+  Subheading & 10pt & bold\\
+  Regular text & 10pt &\\
+  Captions \& ref. & 9pt &\\
+\hline  
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Enačbe in slike}
+
+Enačbe in formule se pišejo s poševnimi črkami ter so zaporedno oštevilčene. V besedilu naj bodo reference na enačbe zapisane v oklepajih (\ref{eq1}).
+
+\begin{equation}
+ \int^{r_{2}}_{0}F(r,\varphi)\; dr\; d\varphi= [\sigma r_{2} / (2\mu_{0})]
+    \label{eq1}
+\end{equation}
+
+Slike naj bodo postavljene v okvirje širine enega ali dveh stolpcev ter označene s številko in podnapisom. V besedilu morajo biti reference na slike (slika \ref{slika}).
+
+\begin{figure}[!htb]
+    \begin{center}
+        \includegraphics[scale=1]{field1.eps}
+        \caption{Podajte kratko razlago slike.} \label{slika}
+    \end{center}
+\end{figure}
+
+\section{Oddaja prispevka}
+
+Prispevek oddajte v elektronski obliki prek obrazca na spletni strani. Pred oddajo prispevka prosimo, da preverite dodatne informacije za avtorje, ki so na spletnih straneh  \cite{ERK}. Obrazec za elektronsko oddajo prispevkov bo aktiviran v juniju. Avtorje bomo o izboru obvestili konec avgusta.
+
+\small
+\begin{thebibliography}{1}
+
+\bibitem{ERK} ERK, http://www.ieee.si/erk/index.html 
+\bibitem{Zbornik} B. Zajc, A. Trost: Zbornik triindvajsete mednarodne Elektrotehniške in računalniške konference ERK 2014, 22. - 24. September 2014, Portorož, Slovenija
+
+\end{thebibliography}
+
+\end{document}

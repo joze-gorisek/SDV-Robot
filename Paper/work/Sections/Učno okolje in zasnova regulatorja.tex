@@ -1,0 +1,117 @@
+\section{Učno okolje in zasnova regulatorja}
+
+  \begin{figure*}[t]
+\begin{equation}
+  R = 1.0\cdot p - 5.0\cdot\theta^2 - 0.3\cdot \Delta\theta^2 - 2\cdot \Delta \varphi^2 - 0.4\cdot v^2 - 0.15\cdot x^2 - 0.1\cdot j_{l+d} - 2.0\cdot fj_{l+d} - 0.003\cdot A_{M3} - 100\cdot e \label{nagrada enacba}
+\end{equation}
+\end{figure*}
+Delno opazljiv markovski problem robota se izvaja v na\-črt\-no nepredvidljivem okolju v simulaciji in realnosti kar pomeni, da na robota vplivajo nepredvideni parametri kot so trenje, šum, zakasnitev senzorjev, itd. Za lažje naslavljanje tega izziva smo za arhitekturo nevronske mreže izbrali nevronsko mrežo s povratno zanko (angl. RNN, recurrent neural network), z uporabo pomnilnih celic GRU. Celica GRU skozi skrito stanje kodira časovno dinamiko sistema, kar robotu omogoča sprotno kompenzacijo fizikalnih netočnosti brez ročno nastavljenih filtrov ali zgodovinskih podatkov. GRU tako deluje kot ucljiv, nelinearni filter, ki bistveno poveča robustnost zaprto-zančnega vodenja.
+  Učenje nevronske mreže je potekalo z algoritmom proksimalne optimizacije strategije (angl. PPO, proximal policy optimization) v fizikalni simulaciji s korakom 1 ms, na 4000 vzporednih okoljih na enem GPU-ju, z adaptivno hitrostjo učenja in 64 koraki med posodobitvami uteži.
+  
+  %Med hiperparametri algoritma PPO smo uporabili stopnjo učenja (angl.\ learning rate) $3 \times 10^{-4}$ z adaptivnim urnikom, ciljno divergenco KL (angl.\ Kullback--Leibler divergence) $0{,}01$, obrezovalni parameter (angl.\ clip parameter) $0{,}2$, koeficient entropije (angl.\ entropy coefficient) $0{.}005$, koeficient izgube vrednosti (angl.\ value loss coefficient) $1{,}0$, 4 učne epohe (angl.\ epochs), 4 mini-pakete (angl.\ mini-batches), omejitev norme gradienta (angl.\ max gradient norm) $0{,}5$ in začetni šum akcij (angl.\ action noise) s standardnim odklonom $0{,}2$.
+  
+  Agent prejme 6-razsežni vektor stanj (slika \ref{nevronska mreža}), jih procesira skozi prvi skriti sloj z 32 GRU celicami, nato pa čez 2 skrita sloja MLP z 32 nevroni in ReLU aktivacijsko funkcijo ter kot izhod vrne 5-razsežni vektor, ki je uporabljen kot vhod na treh motorjih robota. Prva komponenta izhodnega vektorja s pomočjo funkcije tanh določa tok talnega kolesa (DDSM115, M3), naslednji dve ciljni kot sprednjega in zadnjega levega sklepa (CyberGear M1 in M2) in zadnji dve ciljni kot sprednjega in zadnjega desnega sklepa (CyberGear M4 in M5). Dvignjeno kolo (M6) toka ne prejema, zato v akcijskem vektorju ne nastopi. Vsa opazovana stanja so normirana s fiksnimi, vnaprej določenimi vrednostmi, kar omogoča, da je aritmetika pri poznejši izvedbi na mikrokrmilniku identična simulacijski. 
+
+Nagrada za učenje nevronske mreže je zasnovana na podlagi nepoznanosti dejanskih kotov nagiba v ravnovesni legi, zato v nagradi ne predpišemo željenega kota nagiba, temveč kaznujemo kvadrat njegove kotne hitrosti, kar omogoči, da ravnovesno lego nevronska mreža odkrije sama. Ker smo naklon ravnovesne lege poznali vnaprej ($ 0^\circ $), smo poleg kotne hitrosti kaznovali tudi po kotu samem. Nagrada ne vsebuje le opisanih členov, temveč tudi konstantno nagrado za preživetje, kazni za hitrost premika, velikost in gladkost sklepnih ukazov, porabo toka, ob predčasni prekinitvi pa enkratno kazen $-100$ (tabela \ref{tabela}, enačba \ref{nagrada enacba}). 
+ 
+  Učenje strategije je potekalo 1300 iteracij, pri čemer se je razpon začetne perturbacije bočnega nagiba postopoma spreminjal skozi tri faze. Prva faza ($ \pm 5^\circ $) je trajala 350 iteracij, druga faza ($ \pm 8^\circ $) 350 iteracij in zadnja faza ($ \pm 11^\circ $) 600 iteracij. Z večfaznim učenjem se robot nauči spoprijemanja z drugimi koti ob začetku delovanja strategije, kar izboljša njeno robustnost.
+
+  Trajanje epizode smo omejili z mejnimi vrednostmi treh spremenljivk. Epizoda se je zaključila, ko je bila absolutna vrednost naklona robota pet zaporednih korakov nad $ 40^\circ $ ali nagib robota pod $ 20^\circ $ ali nad $ 72^\circ $. Izpolnitev enega izmed teh pogojev je klasificirano kot padec. Če je robot uspešno ohranil naklon in nagib znotraj omejenih vrednosti, se je epizoda terminirala po 10 s. Tako vsaka epizoda pri frekvenci regulacije 50 Hz obsega maksimalno 500 regulacijskih korakov.
+
+\begin{table}[h]
+\caption{Členi nagrajevanja agenta.} \label{tabela}
+\smallskip
+\begin{center}
+  \begin{tabular}{ | r | c | }
+  \hline  
+  \textbf{Nagrada/Kazen} & \textbf{Utež} \\ 
+  \hline  
+  Preživetje & $ +1.0 \cdot p $ \\
+  Naklon & $ -5.0 \cdot \theta ^ 2 $ \\
+  Sprememba naklona & $ -0.3 \cdot \Delta\theta ^ 2 $ \\
+  Ukaz sklepov (L/D) & $-0.1 \cdot j_{l+d}$ \\
+  Hitra sprememba sklepov (L/D) & $-2.0 \cdot fj_{l+d}$ \\
+  Tok koles & $-0.003 \cdot A_{M3} $ \\
+  Predčasna prekinitev & $-100 \cdot e$ \\
+  Linearna hitrost & $ -0.4 \cdot v ^2 $ \\
+  Pozicija & $ -0.15 \cdot x ^ 2 $ \\  
+  Sprememba nagiba & $ -2 \cdot \Delta\varphi ^ 2 $ \\
+  \hline  
+  \end{tabular}
+\end{center}
+\end{table}
+
+
+  % \begin{table}[h]
+% \caption{Členi nagrajevanja agenta.} \label{tabela}
+% \smallskip
+% \begin{center}
+%   \begin{tabular}{ | r | c | }
+%   \hline  
+%   \textbf{Nagrada/Kazen} & \textbf{Utež} \\ 
+%   \hline  
+%   Preživetje & $ +1.0 \cdot p $ \\
+%   Naklon & $ -5.0 \cdot \theta ^ 2 $ \\
+%   Sprememba naklona & $ -0.3 \cdot \Delta\theta ^ 2 $ \\
+%   Ukaz levih sklepov & $-0.1 \cdot j_l$ \\
+%   Ukaz desnih sklepov & $-0.1 \cdot j_d$ \\
+%   \makecell[r]{Hitra sprememba\\levih sklepov} & $-2.0 \cdot fj_l$ \\
+%   \makecell[r]{Hitra sprememba\\desnih sklepov} & $-2.0 \cdot fj_d$ \\
+%   Tok koles & $-0.003 \cdot A_{M3} $ \\
+%   Predčasna prekinitev & $-100 \cdot e$ \\
+%   Linearna hitrost & $ -0.4 \cdot v ^2 $ \\
+%   Pozicija & $ -0.15 \cdot x ^ 2 $ \\  
+%   Sprememba nagiba & $ -2 \cdot \Delta\varphi ^ 2 $ \\
+%   \hline  
+%   \end{tabular}
+% \end{center}
+% \end{table}
+
+%Od tu dalje je če imamo dve fazi epizode (odriv plus stabilizacija) -------------------------------------------------------
+  
+  %Ker je problem sestavljen iz dveh faz (odriv in stabilizacija), je nagrada prav tako razdeljena na dve enačbi. V prvi fazi epizode je nagrada $ R_1 $ usmerjena k stabilnemu odrivu robota proti nagibu $ 47^\circ $. Nagrada druge faze $ R_2 $ je zasnovana na podlagi nepoznanosti dejanskega stabilnega kota nagiba v ravnovesni legi, zato v nagradi ne predpišemo željenega kota nagiba, temveč kaznujemo kvadrat njegove kotne hitrosti, kar omogoči, da ravnovesno lego nevronska mreža odkrije sama. Ker smo naklon ravnovesne lege poznali vnaprej ($ 0^\circ $), smo poleg kotne hitrosti kaznovali tudi po kotu samem. Nagrada ne vsebuje le opisanih členov, temveč tudi konstantno nagrado za preživetje, kazni za hitrost premika, velikost in gladkost sklepnih ukazov, porabo toka, ob predčasni prekinitvi pa enkratno kazen $-100$ (tabela \ref{tab1}). 
+  
+% \begin{table}[h]
+% \caption{Osnovni slogi pri oblikovanju prispevka.} \label{tab1}
+% \smallskip
+% \begin{center}
+%   \begin{tabular}{ | r | c | c | }
+%   \hline  
+%   \textbf{Nagrada/Kazen} & \textbf{Utež} & \textbf{Faza}\\ 
+%   \hline  
+%   Preživetje & $ +1.0 \cdot p $ & \multirow{7}{*}{Obe}\\
+%   Naklon & $ -5.0 \cdot \theta ^ 2 $   & \\
+%   Sprememba naklona & $ -0.3 \cdot \Delta\theta ^ 2 $ & \\
+%   Ukaz leveih sklepov & $-0.1 \cdot j_l$   & \\
+%   \makecell[r]{Hitra sprememba\\levih sklepov} & $-2.0 \cdot fj_l$  & \\
+%   Tok koles & $-0.003 \cdot A_{M3} $  & \\
+%   Predčasna prekinitev & $-100 \cdot e$ & \\ \hline
+%   Doseg odriva & $ -2 \cdot (\varphi - 47 ^ \circ)^ 2 $ & Faza 1 \\ \hline
+%   Linearna hitrost & $ -0.4 \cdot v ^2 $ & \multirow {3}{*}{Faza 2}\\
+%   Pozicija & $ -0.15 \cdot x ^ 2 $ & \\  
+%   Sprememba nagiba & $ -2 \cdot \Delta\varphi ^ 2 $ & \\
+%   Ukaz desnih sklepov & $-0.1 \cdot j_d$   & \\
+%   \makecell[r]{Hitra sprememba\\desnih sklepov} & $-2.0 \cdot fj_d$  & \\
+%   \hline  
+%   \end{tabular}
+% \end{center}
+% \end{table}
+
+%   \begin{strip}
+% \begin{equation}
+% R_1 = 1.0 \cdot p -5.0 \cdot \theta ^ 2 -0.3 \cdot \Delta \theta ^ 2 -0.1 \cdot j_l -2.0 \cdot fj_l -0.003 \cdot A_{M3} -100 \cdot e -2 \cdot (\varphi - 47 ^ \circ)^ 2
+% \end{equation}
+% \begin{equation}
+%   R_2 =1.0\cdot p-5.0\cdot\theta^2-0.3\cdot \Delta  \theta ^2 -2\cdot \Delta \varphi^2-0.4\cdot v^2  -0.15\cdot x^2-0.1\cdot j_{l+d}-2.0\cdot fj_{l+d}-0.003\cdot A_{M3} -100\cdot e 
+% \end{equation}
+% \end{strip}
+
+  %Trajanje epizode je bilo omejeno časovno in tudi glede na to ali je robot padel; naklon $ |\theta| > 40 ^ \circ$ ali nagib $ \varphi > 72 ^ \circ$ ali $ \varphi < 20 ^ \circ$, s tem da v prvi fazi upoštevamo le padec po naklonu. Ker smo želeli usmeriti robota v odriv v pravo smer smo poleg kazni se dodali terminacijo, ko se je odrinil v napačno smer; nagib $ \varphi < 15 ^ \circ$ Če je robot uspešno ohranil naklon in nagib znotraj omejenih vrednosti, se je epizoda terminirala po 10 s. Tako vsaka epizoda pri frekvenci regulacije 50 Hz obsega maksimalno 500 regulacijskih korakov.
+
+% -------------------------------------------------------
+
+  
+%  Nagrada za učenje nevronske mreže je zasnovana na podlagi nepoznanosti dejanskih kotov nagiba v ravnovesni legi, zato v nagradi ne predpišemo željenega kota nagiba, temveč kaznujemo kvadrat njegove kotne hitrosti, kar omogoči, da ravnovesno lego nevronska mreža odkrije sama. Ker smo naklon ravnovesne lege poznali vnaprej ($ 0^\circ $), smo poleg kotne hitrosti kaznovali tudi po kotu samem. Nagrada ne vsebuje le opisanih členov, temveč tudi konstantno nagrado za preživetje, kazni za hitrost premika, velikost in gladkost sklepnih ukazov, porabo toka, ob predčasni prekinitvi pa enkratno kazen $-100$. 
+%Večfazno učenje je potekalo 1500 iteracij, pri čemer se je razpon začetne perturbacije bočnega nagiba postopoma spreminjal skozi štiri faze. Prva faza ($ \pm 3^\circ $) je trajala 500 iteracij, druga faza ($ \pm 8^\circ $) 300 iteracij, tretja faza ($ \pm 15^\circ $) 300 iteracij in zadnja faza ($ \pm 20^\circ $) 400 iteracij. Z večfaznim učenjem se robot nauči spoprijemanja z drugimi koti začetka delovanja regulacije. 
+%Trajanje epizode smo omejili z mejnimi vrednostmi treh spremenljivk. Epizoda se je zaključila, ko je bila absolutna vrednost naklona robota pet zaporednih korakov nad $ 40^\circ $ ali nagib robota pod $ 20^\circ $ ali nad $ 72^\circ $. Izpolnitev enega izmed teh pogojev je klasificirano kot padec. Če je robot uspešno ohranil naklon in nagib znotraj omejenih vrednosti, se je epizoda terminirala po 10 s. Tako vsaka epizoda pri frekvenci regulacije 50 Hz obsega maksimalno 500 regulacijskih korakov.
+  
